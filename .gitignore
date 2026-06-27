@@ -1,0 +1,11 @@
+Project/
+.claude/
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/asset_tracker.db
+backend/uploads/
+frontend/node_modules/
+frontend/dist/
+.env
+*.pyc

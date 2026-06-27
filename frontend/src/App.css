@@ -1,0 +1,352 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: #4f46e5;
+  --accent-dark: #4338ca;
+  --bg: #f3f4f8;
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --radius: 10px;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 1.2rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 1.8rem 0 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: white;
+  padding: 0.9rem 1.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nav-brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.4rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: #c7d2fe;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.92rem;
+  transition: color 0.15s;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.main-content {
+  padding: 2.2rem 1.5rem;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e1b4b, #4338ca 60%, #6366f1);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: var(--surface);
+  padding: 2.2rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  width: 340px;
+}
+
+.auth-form h2 {
+  margin: 0 0 0.4rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.auth-form input {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.auth-form button {
+  padding: 0.7rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.15s;
+}
+
+.auth-form button:hover {
+  background: var(--accent-dark);
+}
+
+.auth-form p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.auth-form a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+  margin: 1.2rem 0 1.8rem;
+}
+
+@media (max-width: 720px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.3rem 1.4rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.card-accent {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, #eef2ff, #ffffff);
+}
+
+.big-number {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.big-number.positive {
+  color: var(--success);
+}
+
+.big-number.negative {
+  color: var(--danger);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border);
+}
+
+.data-table th {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  background: #f9fafb;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.data-table td {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+}
+
+.data-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.crud-form {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.crud-form input {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.crud-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.documents-panel {
+  padding: 1rem 1.2rem;
+  background: #f9fafb;
+  border-radius: 6px;
+}
+
+.documents-panel input[type="file"] {
+  font-size: 0.85rem;
+}
+
+.documents-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.7rem 0 0;
+}
+
+.documents-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+}
+
+.documents-list a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.documents-list a:hover {
+  text-decoration: underline;
+}
+
+.crud-form button,
+.data-table button,
+.documents-list button {
+  padding: 0.5rem 0.95rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.crud-form button:hover,
+.data-table button:hover,
+.documents-list button:hover {
+  background: var(--accent-dark);
+}
+
+.data-table td:last-child button:nth-of-type(2) {
+  background: var(--danger);
+}
+
+.data-table td:last-child button:nth-of-type(2):hover {
+  background: #b91c1c;
+}
+
+.documents-list button {
+  background: var(--danger);
+}
+
+.documents-list button:hover {
+  background: #b91c1c;
+}
