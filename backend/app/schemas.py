@@ -113,6 +113,7 @@ class DocumentOut(BaseModel):
     asset_id: int
     original_filename: str
     content_type: str | None
+    doc_type: str
     created_at: datetime
     url: str
 
@@ -127,3 +128,4 @@ class DashboardSummary(BaseModel):
     net_worth: float
     gold_rate_per_gram_24k: float
     silver_rate_per_gram: float
+    platinum_rate_per_gram: float

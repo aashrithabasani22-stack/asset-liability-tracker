@@ -86,4 +86,5 @@ class Document(Base):
     original_filename = Column(String, nullable=False)
     stored_filename = Column(String, nullable=False)
     content_type = Column(String, nullable=True)
+    doc_type = Column(String, nullable=False, server_default="document")
     created_at = Column(DateTime, server_default=func.now())

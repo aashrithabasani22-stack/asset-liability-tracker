@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.database import get_db
-from app.market_rates import get_gold_silver_rates
+from app.market_rates import get_all_rates
 from app.security import get_current_user
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
@@ -14,7 +14,7 @@ def get_summary(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    gold_rate, silver_rate = get_gold_silver_rates()
+    gold_rate, silver_rate, platinum_rate = get_all_rates()
 
     properties = db.query(models.Property).filter(models.Property.user_id == current_user.id).all()
     gold_assets = db.query(models.GoldAsset).filter(models.GoldAsset.user_id == current_user.id).all()
@@ -40,4 +40,5 @@ def get_summary(
         net_worth=total_assets - total_liabilities,
         gold_rate_per_gram_24k=gold_rate,
         silver_rate_per_gram=silver_rate,
+        platinum_rate_per_gram=platinum_rate,
     )

@@ -1,7 +1,7 @@
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
@@ -48,6 +48,7 @@ def _to_out(doc: models.Document) -> schemas.DocumentOut:
         asset_id=doc.asset_id,
         original_filename=doc.original_filename,
         content_type=doc.content_type,
+        doc_type=doc.doc_type or "document",
         created_at=doc.created_at,
         url=f"/documents/{doc.id}/download",
     )
@@ -58,9 +59,13 @@ async def upload_document(
     asset_type: str,
     asset_id: int,
     file: UploadFile = File(...),
+    doc_type: str = Form("document"),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    if doc_type not in ("bill", "photo", "document"):
+        doc_type = "document"
+
     _assert_asset_owned(db, asset_type, asset_id, current_user.id)
 
     contents = await file.read()
@@ -81,6 +86,7 @@ async def upload_document(
         original_filename=file.filename or stored_filename,
         stored_filename=stored_filename,
         content_type=file.content_type,
+        doc_type=doc_type,
     )
     db.add(doc)
     db.commit()

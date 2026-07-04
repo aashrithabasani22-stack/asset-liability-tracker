@@ -116,25 +116,39 @@ export default function Dashboard() {
         <div className="card chart-card">
           <h2>Market Rates</h2>
           <table className="data-table rates-table">
+            <thead>
+              <tr><th>Metal</th><th>Live Rate</th></tr>
+            </thead>
             <tbody>
               <tr>
-                <td>Gold 24k</td>
+                <td>🥇 Gold 24k</td>
                 <td className="rate-value">{fmt.format(summary.gold_rate_per_gram_24k)}/g</td>
               </tr>
               <tr>
-                <td>Silver</td>
+                <td>🥈 Silver</td>
                 <td className="rate-value">{fmt.format(summary.silver_rate_per_gram)}/g</td>
               </tr>
+              <tr>
+                <td>⬜ Platinum</td>
+                <td className="rate-value">{fmt.format(summary.platinum_rate_per_gram)}/g</td>
+              </tr>
+            </tbody>
+          </table>
+          <table className="data-table rates-table" style={{ marginTop: "0.8rem" }}>
+            <thead>
+              <tr><th>Your Assets</th><th>Value</th></tr>
+            </thead>
+            <tbody>
               <tr>
                 <td>Real Estate</td>
                 <td className="rate-value">{fmt.format(summary.total_real_estate_value)}</td>
               </tr>
               <tr>
-                <td>Gold Total</td>
+                <td>Gold</td>
                 <td className="rate-value">{fmt.format(summary.total_gold_value)}</td>
               </tr>
               <tr>
-                <td>Silver Total</td>
+                <td>Silver</td>
                 <td className="rate-value">{fmt.format(summary.total_silver_value)}</td>
               </tr>
             </tbody>
