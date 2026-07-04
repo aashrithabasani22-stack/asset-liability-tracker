@@ -93,6 +93,7 @@ class LoanBase(BaseModel):
     remaining_balance: float
     monthly_payment: float
     payment_bank: str | None = None
+    next_due_date: str | None = None
 
 
 class LoanCreate(LoanBase):

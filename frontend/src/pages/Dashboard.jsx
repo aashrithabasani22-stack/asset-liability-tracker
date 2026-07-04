@@ -229,6 +229,30 @@ export default function Dashboard() {
   const fmt = makeFmt(currency);
   const cx = (inr) => inr * fxRate;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  function daysUntil(dateStr) {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    d.setHours(0, 0, 0, 0);
+    return Math.round((d - today) / 86400000);
+  }
+
+  const alerts = [];
+  creditCards.forEach((cc) => {
+    const days = daysUntil(cc.due_date);
+    if (days === null || cc.outstanding_amount <= 0) return;
+    if (days < 0) alerts.push({ type: "danger", msg: `${cc.card_name || cc.bank_name} credit card payment of ${fmt.format(cx(cc.outstanding_amount))} is overdue by ${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""}` });
+    else if (days <= 7) alerts.push({ type: days <= 2 ? "danger" : "warning", msg: `${cc.card_name || cc.bank_name} credit card payment of ${fmt.format(cx(cc.outstanding_amount))} due in ${days} day${days !== 1 ? "s" : ""}` });
+  });
+  loans.forEach((loan) => {
+    if (!loan.monthly_payment || loan.remaining_balance <= 0) return;
+    const days = daysUntil(loan.next_due_date);
+    if (days === null) return;
+    if (days < 0) alerts.push({ type: "danger", msg: `${loan.bank_name} loan EMI of ${fmt.format(cx(loan.monthly_payment))} is overdue by ${Math.abs(days)} day${Math.abs(days) !== 1 ? "s" : ""}` });
+    else if (days <= 7) alerts.push({ type: days <= 2 ? "danger" : "warning", msg: `${loan.bank_name} loan EMI of ${fmt.format(cx(loan.monthly_payment))} due in ${days} day${days !== 1 ? "s" : ""}` });
+  });
+
   const pieData = [
     { name: "Real Estate", value: summary.total_real_estate_value },
     { name: "Gold", value: summary.total_gold_value },
@@ -289,6 +313,15 @@ export default function Dashboard() {
           <p className="big-number negative">{fmt.format(cx(summary.total_credit_card_outstanding))}</p>
         </div>
       </div>
+
+      {alerts.length > 0 && (
+        <div className="alerts-panel">
+          <h2 className="alerts-title">⚠ Upcoming payments</h2>
+          {alerts.map((a, i) => (
+            <div key={i} className={`alert-item alert-${a.type}`}>{a.msg}</div>
+          ))}
+        </div>
+      )}
 
       <div className="charts-row">
         <div className="card chart-card">

@@ -976,6 +976,40 @@ h2 {
   color: var(--text-muted);
 }
 
+/* ── Alerts panel ── */
+.alerts-panel {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.alerts-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.alert-item {
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-left: 4px solid;
+}
+
+.alert-warning {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #f59e0b;
+}
+
+.alert-danger {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #ef4444;
+}
+
 /* ── Mobile responsive ── */
 
 /* Hamburger button — hidden on desktop */

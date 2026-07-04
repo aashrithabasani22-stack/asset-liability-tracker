@@ -7,6 +7,7 @@ const fields = [
   { name: "remaining_balance", label: "Remaining Balance", type: "number" },
   { name: "monthly_payment", label: "Monthly EMI", type: "number" },
   { name: "payment_bank", label: "Paid From (Bank/Account)", required: false },
+  { name: "next_due_date", label: "Next EMI Due Date (YYYY-MM-DD)", required: false },
 ];
 
 export default function Loans() {
