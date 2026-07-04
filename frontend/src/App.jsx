@@ -18,6 +18,7 @@ import OtherAssets from "./pages/OtherAssets";
 import Settings from "./pages/Settings";
 import BankAccounts from "./pages/BankAccounts";
 import CreditCards from "./pages/CreditCards";
+import Family from "./pages/Family";
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/bank-accounts" element={<BankAccounts />} />
             <Route path="/credit-cards" element={<CreditCards />} />
+            <Route path="/family" element={<Family />} />
           </Route>
         </Routes>
       </BrowserRouter>

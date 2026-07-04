@@ -173,6 +173,30 @@ class CreditCard(Base):
     owner = relationship("User", backref="credit_cards")
 
 
+class FamilyGroup(Base):
+    __tablename__ = "family_groups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    invite_code = Column(String, unique=True, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+
+    members = relationship("FamilyMember", back_populates="group", cascade="all, delete-orphan")
+
+
+class FamilyMember(Base):
+    __tablename__ = "family_members"
+
+    id = Column(Integer, primary_key=True, index=True)
+    group_id = Column(Integer, ForeignKey("family_groups.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    joined_at = Column(DateTime, server_default=func.now())
+
+    group = relationship("FamilyGroup", back_populates="members")
+    user = relationship("User")
+
+
 class Document(Base):
     __tablename__ = "documents"
 

@@ -236,6 +236,43 @@ class DocumentOut(BaseModel):
     url: str
 
 
+# --- Family ---
+class FamilyGroupCreate(BaseModel):
+    name: str
+
+class FamilyMemberOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    user_id: int
+    name: str
+    email: str
+    joined_at: datetime
+
+class FamilyGroupOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    owner_id: int
+    invite_code: str
+    members: list[FamilyMemberOut]
+    created_at: datetime
+
+class FamilyMemberSummary(BaseModel):
+    user_id: int
+    name: str
+    email: str
+    net_worth: float
+    total_assets: float
+    total_liabilities: float
+
+class FamilyDashboard(BaseModel):
+    group_name: str
+    members: list[FamilyMemberSummary]
+    combined_net_worth: float
+    combined_assets: float
+    combined_liabilities: float
+
+
 # --- Dashboard ---
 class DashboardSummary(BaseModel):
     total_real_estate_value: float
