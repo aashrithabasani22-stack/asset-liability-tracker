@@ -37,6 +37,10 @@ const COLORS = {
   "Real Estate": "#4f46e5",
   Gold: "#f59e0b",
   Silver: "#94a3b8",
+  "Fixed Deposits": "#06b6d4",
+  "MF & Stocks": "#8b5cf6",
+  Vehicles: "#f97316",
+  Other: "#6b7280",
   Liabilities: "#ef4444",
 };
 
@@ -225,6 +229,10 @@ export default function Dashboard() {
     { name: "Real Estate", value: summary.total_real_estate_value },
     { name: "Gold", value: summary.total_gold_value },
     { name: "Silver", value: summary.total_silver_value },
+    { name: "Fixed Deposits", value: summary.total_fd_value },
+    { name: "MF & Stocks", value: summary.total_mf_value },
+    { name: "Vehicles", value: summary.total_vehicle_value },
+    { name: "Other", value: summary.total_other_value },
     { name: "Liabilities", value: summary.total_liabilities },
   ].filter((d) => d.value > 0);
 
@@ -329,18 +337,13 @@ export default function Dashboard() {
               <tr><th>Your Assets</th><th>Value</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Real Estate</td>
-                <td className="rate-value">{fmt.format(cx(summary.total_real_estate_value))}</td>
-              </tr>
-              <tr>
-                <td>Gold</td>
-                <td className="rate-value">{fmt.format(cx(summary.total_gold_value))}</td>
-              </tr>
-              <tr>
-                <td>Silver</td>
-                <td className="rate-value">{fmt.format(cx(summary.total_silver_value))}</td>
-              </tr>
+              <tr><td>Real Estate</td><td className="rate-value">{fmt.format(cx(summary.total_real_estate_value))}</td></tr>
+              <tr><td>Gold</td><td className="rate-value">{fmt.format(cx(summary.total_gold_value))}</td></tr>
+              <tr><td>Silver</td><td className="rate-value">{fmt.format(cx(summary.total_silver_value))}</td></tr>
+              <tr><td>Fixed Deposits</td><td className="rate-value">{fmt.format(cx(summary.total_fd_value))}</td></tr>
+              <tr><td>MF &amp; Stocks</td><td className="rate-value">{fmt.format(cx(summary.total_mf_value))}</td></tr>
+              <tr><td>Vehicles</td><td className="rate-value">{fmt.format(cx(summary.total_vehicle_value))}</td></tr>
+              <tr><td>Other</td><td className="rate-value">{fmt.format(cx(summary.total_other_value))}</td></tr>
             </tbody>
           </table>
         </div>

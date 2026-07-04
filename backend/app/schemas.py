@@ -106,6 +106,77 @@ class LoanOut(LoanBase):
     created_at: datetime
 
 
+# --- Fixed Deposit ---
+class FixedDepositBase(BaseModel):
+    bank_name: str
+    principal_amount: float
+    interest_rate: float
+    start_date: str | None = None
+    maturity_date: str | None = None
+    maturity_value: float
+    owner_name: str | None = None
+
+class FixedDepositCreate(FixedDepositBase):
+    pass
+
+class FixedDepositOut(FixedDepositBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
+# --- Mutual Fund / Stock ---
+class MutualFundBase(BaseModel):
+    fund_name: str
+    asset_subtype: str | None = None
+    units: float
+    nav_per_unit: float
+    current_value: float
+    owner_name: str | None = None
+
+class MutualFundCreate(MutualFundBase):
+    pass
+
+class MutualFundOut(MutualFundBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
+# --- Vehicle ---
+class VehicleBase(BaseModel):
+    name: str
+    vehicle_type: str | None = None
+    registration_number: str | None = None
+    current_value: float
+    owner_name: str | None = None
+
+class VehicleCreate(VehicleBase):
+    pass
+
+class VehicleOut(VehicleBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
+# --- Other Asset ---
+class OtherAssetBase(BaseModel):
+    name: str
+    category: str | None = None
+    current_value: float
+    notes: str | None = None
+    owner_name: str | None = None
+
+class OtherAssetCreate(OtherAssetBase):
+    pass
+
+class OtherAssetOut(OtherAssetBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
 # --- Document ---
 class DocumentOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -125,6 +196,10 @@ class DashboardSummary(BaseModel):
     total_real_estate_value: float
     total_gold_value: float
     total_silver_value: float
+    total_fd_value: float
+    total_mf_value: float
+    total_vehicle_value: float
+    total_other_value: float
     total_assets: float
     total_liabilities: float
     net_worth: float

@@ -18,6 +18,10 @@ ASSET_MODELS = {
     "gold": models.GoldAsset,
     "silver": models.SilverAsset,
     "loan": models.Loan,
+    "fd": models.FixedDeposit,
+    "mf": models.MutualFund,
+    "vehicle": models.Vehicle,
+    "other": models.OtherAsset,
 }
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024

@@ -77,6 +77,49 @@ h2 {
   color: white;
 }
 
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-trigger {
+  color: #c7d2fe;
+  font-weight: 500;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.nav-dropdown-trigger:hover {
+  color: white;
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  min-width: 160px;
+  padding: 0.4rem 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-dropdown-menu a {
+  color: var(--text) !important;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.1s;
+}
+
+.nav-dropdown-menu a:hover {
+  background: #f3f4f6;
+  color: var(--accent) !important;
+}
+
 .logout-btn {
   background: rgba(255, 255, 255, 0.12);
   color: white;

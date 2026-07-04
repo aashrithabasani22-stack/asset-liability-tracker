@@ -6,7 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.database import Base, engine
-from app.routers import auth, dashboard, documents, gold, loans, properties, silver
+from app.routers import (
+    auth, dashboard, documents, gold, loans, properties, silver,
+    fixed_deposits, mutual_funds, vehicles, other_assets,
+)
 
 
 @asynccontextmanager
@@ -48,6 +51,10 @@ app.include_router(silver.router)
 app.include_router(loans.router)
 app.include_router(dashboard.router)
 app.include_router(documents.router)
+app.include_router(fixed_deposits.router)
+app.include_router(mutual_funds.router)
+app.include_router(vehicles.router)
+app.include_router(other_assets.router)
 
 
 @app.get("/")

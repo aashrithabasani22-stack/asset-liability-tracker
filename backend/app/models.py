@@ -78,6 +78,69 @@ class Loan(Base):
     owner = relationship("User", back_populates="loans")
 
 
+class FixedDeposit(Base):
+    __tablename__ = "fixed_deposits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    bank_name = Column(String, nullable=False)
+    principal_amount = Column(Float, nullable=False, default=0)
+    interest_rate = Column(Float, nullable=False, default=0)
+    start_date = Column(String, nullable=True)
+    maturity_date = Column(String, nullable=True)
+    maturity_value = Column(Float, nullable=False, default=0)
+    owner_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="fixed_deposits")
+
+
+class MutualFund(Base):
+    __tablename__ = "mutual_funds"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    fund_name = Column(String, nullable=False)
+    asset_subtype = Column(String, nullable=True)
+    units = Column(Float, nullable=False, default=0)
+    nav_per_unit = Column(Float, nullable=False, default=0)
+    current_value = Column(Float, nullable=False, default=0)
+    owner_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="mutual_funds")
+
+
+class Vehicle(Base):
+    __tablename__ = "vehicles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    vehicle_type = Column(String, nullable=True)
+    registration_number = Column(String, nullable=True)
+    current_value = Column(Float, nullable=False, default=0)
+    owner_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="vehicles")
+
+
+class OtherAsset(Base):
+    __tablename__ = "other_assets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    category = Column(String, nullable=True)
+    current_value = Column(Float, nullable=False, default=0)
+    notes = Column(String, nullable=True)
+    owner_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="other_assets")
+
+
 class Document(Base):
     __tablename__ = "documents"
 
