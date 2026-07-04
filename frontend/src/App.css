@@ -350,3 +350,94 @@ h2 {
 .documents-list button:hover {
   background: #b91c1c;
 }
+
+/* Charts */
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+  margin-bottom: 1.8rem;
+}
+
+@media (max-width: 720px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card h2 {
+  margin-top: 0;
+}
+
+.chart-empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.rates-table td {
+  padding: 0.6rem 0.8rem;
+}
+
+.rate-value {
+  font-weight: 600;
+  text-align: right !important;
+  color: var(--text);
+}
+
+/* Loan progress bars */
+.loan-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 0.4rem;
+}
+
+.loan-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.loan-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.loan-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.loan-amounts {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+}
+
+.progress-track {
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #818cf8);
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.loan-progress-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.loan-remaining {
+  color: var(--danger);
+  font-weight: 500;
+}
