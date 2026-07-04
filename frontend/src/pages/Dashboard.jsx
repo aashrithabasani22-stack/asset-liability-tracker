@@ -7,6 +7,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
 import apiClient from "../api/client";
 
 const CURRENCIES = [
@@ -53,6 +56,9 @@ function CustomLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }) {
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [loans, setLoans] = useState([]);
+  const [properties, setProperties] = useState([]);
+  const [goldAssets, setGoldAssets] = useState([]);
+  const [silverAssets, setSilverAssets] = useState([]);
   const [error, setError] = useState("");
 
   const [currency, setCurrency] = useState("INR");
@@ -64,10 +70,16 @@ export default function Dashboard() {
     Promise.all([
       apiClient.get("/dashboard/summary"),
       apiClient.get("/loans"),
+      apiClient.get("/properties"),
+      apiClient.get("/gold"),
+      apiClient.get("/silver"),
     ])
-      .then(([summaryRes, loansRes]) => {
+      .then(([summaryRes, loansRes, propRes, goldRes, silverRes]) => {
         setSummary(summaryRes.data);
         setLoans(loansRes.data);
+        setProperties(propRes.data);
+        setGoldAssets(goldRes.data);
+        setSilverAssets(silverRes.data);
       })
       .catch((err) => setError(err.response?.data?.detail || "Failed to load dashboard"));
   }, []);
@@ -84,6 +96,124 @@ export default function Dashboard() {
       .catch(() => setFxRate(1))
       .finally(() => setFxLoading(false));
   }, [currency]);
+
+  function exportPDF() {
+    const doc = new jsPDF();
+    const c = (v) => fmt.format(v * fxRate);
+    const date = new Date().toLocaleDateString("en-IN");
+
+    doc.setFontSize(18);
+    doc.text("Asset & Liability Report", 14, 20);
+    doc.setFontSize(10);
+    doc.setTextColor(120);
+    doc.text(`Generated: ${date}  |  Currency: ${currency}`, 14, 27);
+    doc.setTextColor(0);
+
+    autoTable(doc, {
+      startY: 33,
+      head: [["Summary", "Value"]],
+      body: [
+        ["Net Worth", c(summary.net_worth)],
+        ["Total Assets", c(summary.total_assets)],
+        ["Total Liabilities", c(summary.total_liabilities)],
+        ["Real Estate", c(summary.total_real_estate_value)],
+        ["Gold", c(summary.total_gold_value)],
+        ["Silver", c(summary.total_silver_value)],
+      ],
+      headStyles: { fillColor: [79, 70, 229] },
+    });
+
+    if (properties.length) {
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 10,
+        head: [["Real Estate — Address", "Type", "Value", "Owner"]],
+        body: properties.map((p) => [p.address, p.property_type, c(p.current_value), p.owner_name || "-"]),
+        headStyles: { fillColor: [79, 70, 229] },
+      });
+    }
+
+    if (goldAssets.length) {
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 10,
+        head: [["Gold — Article", "Weight (g)", "Purity (k)", "Owner"]],
+        body: goldAssets.map((g) => [g.article_name, g.weight_grams, g.purity_karat, g.owner_name || "-"]),
+        headStyles: { fillColor: [245, 158, 11] },
+      });
+    }
+
+    if (silverAssets.length) {
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 10,
+        head: [["Silver — Article", "Weight (g)", "Purity (%)", "Owner"]],
+        body: silverAssets.map((s) => [s.article_name, s.weight_grams, s.purity_percent, s.owner_name || "-"]),
+        headStyles: { fillColor: [148, 163, 184] },
+      });
+    }
+
+    if (loans.length) {
+      autoTable(doc, {
+        startY: doc.lastAutoTable.finalY + 10,
+        head: [["Loans — Lender", "Type", "Principal", "Outstanding", "Monthly EMI", "Paid From"]],
+        body: loans.map((l) => [
+          l.bank_name, l.loan_type,
+          c(l.principal_amount), c(l.remaining_balance), c(l.monthly_payment),
+          l.payment_bank || "-",
+        ]),
+        headStyles: { fillColor: [239, 68, 68] },
+      });
+    }
+
+    doc.save(`asset-report-${date}.pdf`);
+  }
+
+  function exportExcel() {
+    const c = (v) => parseFloat((v * fxRate).toFixed(2));
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
+      [`Asset & Liability Report — ${currency} — ${new Date().toLocaleDateString("en-IN")}`],
+      [],
+      ["Summary", "Value"],
+      ["Net Worth", c(summary.net_worth)],
+      ["Total Assets", c(summary.total_assets)],
+      ["Total Liabilities", c(summary.total_liabilities)],
+      ["Real Estate", c(summary.total_real_estate_value)],
+      ["Gold", c(summary.total_gold_value)],
+      ["Silver", c(summary.total_silver_value)],
+    ]), "Summary");
+
+    if (properties.length) {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
+        properties.map((p) => ({ Address: p.address, Type: p.property_type, [`Value (${currency})`]: c(p.current_value), Owner: p.owner_name || "" }))
+      ), "Real Estate");
+    }
+
+    if (goldAssets.length) {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
+        goldAssets.map((g) => ({ Article: g.article_name, "Weight (g)": g.weight_grams, "Purity (k)": g.purity_karat, Owner: g.owner_name || "" }))
+      ), "Gold");
+    }
+
+    if (silverAssets.length) {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
+        silverAssets.map((s) => ({ Article: s.article_name, "Weight (g)": s.weight_grams, "Purity (%)": s.purity_percent, Owner: s.owner_name || "" }))
+      ), "Silver");
+    }
+
+    if (loans.length) {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(
+        loans.map((l) => ({
+          Lender: l.bank_name, Type: l.loan_type,
+          [`Principal (${currency})`]: c(l.principal_amount),
+          [`Outstanding (${currency})`]: c(l.remaining_balance),
+          [`Monthly EMI (${currency})`]: c(l.monthly_payment),
+          "Paid From": l.payment_bank || "",
+        }))
+      ), "Loans");
+    }
+
+    XLSX.writeFile(wb, `asset-report-${new Date().toLocaleDateString("en-IN").replace(/\//g, "-")}.xlsx`);
+  }
 
   if (error) return <p className="error">{error}</p>;
   if (!summary) return <p>Loading...</p>;
@@ -102,7 +232,8 @@ export default function Dashboard() {
     <div>
       <div className="dashboard-header">
         <h1>Net Worth Dashboard</h1>
-        <div className="currency-switcher">
+        <div className="dashboard-actions">
+          <div className="currency-switcher">
           <label className="currency-switcher-label">View in</label>
           <select
             className="currency-switcher-select"
@@ -117,6 +248,11 @@ export default function Dashboard() {
           {fxDate && !fxLoading && (
             <span className="fx-date">Rate: {fxDate}</span>
           )}
+          </div>
+          <div className="export-btns">
+            <button className="export-btn" onClick={exportPDF}>⬇ PDF</button>
+            <button className="export-btn export-btn-green" onClick={exportExcel}>⬇ Excel</button>
+          </div>
         </div>
       </div>
 
