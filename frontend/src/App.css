@@ -386,6 +386,42 @@ h2 {
   background: #b91c1c;
 }
 
+/* Inline row editing */
+.editing-row {
+  background: #eef2ff !important;
+}
+
+.editing-row td {
+  padding: 0.4rem 0.6rem;
+}
+
+.inline-edit-input {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1.5px solid var(--accent);
+  border-radius: 5px;
+  font-size: 0.88rem;
+  background: white;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.btn-save {
+  background: var(--success) !important;
+}
+
+.btn-save:hover {
+  background: #15803d !important;
+}
+
+.btn-cancel {
+  background: #6b7280 !important;
+}
+
+.btn-cancel:hover {
+  background: #4b5563 !important;
+}
+
 .documents-list button {
   background: var(--danger);
 }

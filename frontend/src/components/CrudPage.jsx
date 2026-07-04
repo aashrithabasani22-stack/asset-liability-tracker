@@ -2,18 +2,27 @@ import { Fragment, useEffect, useState } from "react";
 import apiClient from "../api/client";
 import AssetDocuments from "./AssetDocuments";
 
+function emptyForm(fields) {
+  const out = {};
+  fields.forEach((f) => (out[f.name] = ""));
+  return out;
+}
+
+function toPayload(fields, form) {
+  const out = {};
+  fields.forEach((f) => {
+    out[f.name] = f.type === "number" ? Number(form[f.name] || 0) : form[f.name];
+  });
+  return out;
+}
+
 export default function CrudPage({ title, endpoint, fields, assetType }) {
   const [items, setItems] = useState([]);
-  const [form, setForm] = useState(emptyForm(fields));
+  const [addForm, setAddForm] = useState(emptyForm(fields));
   const [editingId, setEditingId] = useState(null);
-  const [error, setError] = useState("");
+  const [editForm, setEditForm] = useState({});
   const [expandedId, setExpandedId] = useState(null);
-
-  function emptyForm(fields) {
-    const initial = {};
-    fields.forEach((f) => (initial[f.name] = f.type === "number" ? "" : ""));
-    return initial;
-  }
+  const [error, setError] = useState("");
 
   function load() {
     apiClient
@@ -22,44 +31,46 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
       .catch((err) => setError(err.response?.data?.detail || "Failed to load"));
   }
 
-  useEffect(() => {
-    load();
-  }, [endpoint]);
+  useEffect(() => { load(); }, [endpoint]);
 
-  function handleChange(name, value) {
-    setForm((prev) => ({ ...prev, [name]: value }));
-  }
-
-  async function handleSubmit(e) {
+  async function handleAdd(e) {
     e.preventDefault();
     setError("");
-    const payload = {};
-    fields.forEach((f) => {
-      payload[f.name] = f.type === "number" ? Number(form[f.name] || 0) : form[f.name];
-    });
-
     try {
-      if (editingId) {
-        await apiClient.put(`${endpoint}/${editingId}`, payload);
-      } else {
-        await apiClient.post(endpoint, payload);
-      }
-      setForm(emptyForm(fields));
-      setEditingId(null);
+      await apiClient.post(endpoint, toPayload(fields, addForm));
+      setAddForm(emptyForm(fields));
       load();
     } catch (err) {
       setError(err.response?.data?.detail || "Save failed");
     }
   }
 
-  function handleEdit(item) {
-    const next = {};
-    fields.forEach((f) => (next[f.name] = item[f.name] ?? ""));
-    setForm(next);
+  function startEdit(item) {
+    const form = {};
+    fields.forEach((f) => (form[f.name] = item[f.name] ?? ""));
+    setEditForm(form);
     setEditingId(item.id);
   }
 
+  function cancelEdit() {
+    setEditingId(null);
+    setEditForm({});
+  }
+
+  async function saveEdit(id) {
+    setError("");
+    try {
+      await apiClient.put(`${endpoint}/${id}`, toPayload(fields, editForm));
+      setEditingId(null);
+      setEditForm({});
+      load();
+    } catch (err) {
+      setError(err.response?.data?.detail || "Update failed");
+    }
+  }
+
   async function handleDelete(id) {
+    if (editingId === id) cancelEdit();
     await apiClient.delete(`${endpoint}/${id}`);
     load();
   }
@@ -69,58 +80,65 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
       <h1>{title}</h1>
       {error && <p className="error">{error}</p>}
 
-      <form className="crud-form" onSubmit={handleSubmit}>
+      <form className="crud-form" onSubmit={handleAdd}>
         {fields.map((f) => (
           <input
             key={f.name}
             type={f.type === "number" ? "number" : "text"}
             step={f.type === "number" ? "any" : undefined}
             placeholder={f.label}
-            value={form[f.name]}
-            onChange={(e) => handleChange(f.name, e.target.value)}
+            value={addForm[f.name]}
+            onChange={(e) => setAddForm((prev) => ({ ...prev, [f.name]: e.target.value }))}
             required={f.required !== false}
           />
         ))}
-        <button type="submit">{editingId ? "Update" : "Add"}</button>
-        {editingId && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditingId(null);
-              setForm(emptyForm(fields));
-            }}
-          >
-            Cancel
-          </button>
-        )}
+        <button type="submit">Add</button>
       </form>
 
       <table className="data-table">
         <thead>
           <tr>
-            {fields.map((f) => (
-              <th key={f.name}>{f.label}</th>
-            ))}
+            {fields.map((f) => <th key={f.name}>{f.label}</th>)}
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {items.map((item) => (
             <Fragment key={item.id}>
-              <tr>
-                {fields.map((f) => (
-                  <td key={f.name}>{item[f.name]}</td>
-                ))}
-                <td>
-                  <button onClick={() => handleEdit(item)}>Edit</button>
-                  <button onClick={() => handleDelete(item.id)}>Delete</button>
-                  {assetType && (
-                    <button onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}>
-                      Docs
-                    </button>
-                  )}
-                </td>
-              </tr>
+              {editingId === item.id ? (
+                <tr className="editing-row">
+                  {fields.map((f) => (
+                    <td key={f.name}>
+                      <input
+                        className="inline-edit-input"
+                        type={f.type === "number" ? "number" : "text"}
+                        step={f.type === "number" ? "any" : undefined}
+                        value={editForm[f.name] ?? ""}
+                        onChange={(e) =>
+                          setEditForm((prev) => ({ ...prev, [f.name]: e.target.value }))
+                        }
+                      />
+                    </td>
+                  ))}
+                  <td>
+                    <button className="btn-save" onClick={() => saveEdit(item.id)}>Save</button>
+                    <button className="btn-cancel" onClick={cancelEdit}>Cancel</button>
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  {fields.map((f) => <td key={f.name}>{item[f.name]}</td>)}
+                  <td>
+                    <button onClick={() => startEdit(item)}>Edit</button>
+                    <button onClick={() => handleDelete(item.id)}>Delete</button>
+                    {assetType && (
+                      <button onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}>
+                        {expandedId === item.id ? "Hide Docs" : "Docs"}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              )}
               {assetType && expandedId === item.id && (
                 <tr>
                   <td colSpan={fields.length + 1}>
