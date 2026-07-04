@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import apiClient from "../api/client";
 import AssetDocuments from "./AssetDocuments";
 
@@ -24,6 +24,9 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
   const [expandedId, setExpandedId] = useState(null);
   const [error, setError] = useState("");
 
+  const [search, setSearch] = useState("");
+  const [ownerFilter, setOwnerFilter] = useState("");
+
   function load() {
     apiClient
       .get(endpoint)
@@ -32,6 +35,23 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
   }
 
   useEffect(() => { load(); }, [endpoint]);
+
+  const owners = useMemo(() => {
+    const set = new Set(items.map((i) => i.owner_name).filter(Boolean));
+    return [...set].sort();
+  }, [items]);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    return items.filter((item) => {
+      if (ownerFilter && item.owner_name !== ownerFilter) return false;
+      if (!q) return true;
+      return fields.some((f) => {
+        const val = item[f.name];
+        return val != null && String(val).toLowerCase().includes(q);
+      });
+    });
+  }, [items, search, ownerFilter, fields]);
 
   async function handleAdd(e) {
     e.preventDefault();
@@ -77,7 +97,10 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
 
   return (
     <div>
-      <h1>{title}</h1>
+      <div className="page-header">
+        <h1>{title}</h1>
+        <span className="item-count">{filtered.length} of {items.length}</span>
+      </div>
       {error && <p className="error">{error}</p>}
 
       <form className="crud-form" onSubmit={handleAdd}>
@@ -95,6 +118,31 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
         <button type="submit">Add</button>
       </form>
 
+      <div className="filter-bar">
+        <input
+          className="filter-search"
+          type="text"
+          placeholder="Search…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        {owners.length > 0 && (
+          <select
+            className="filter-select"
+            value={ownerFilter}
+            onChange={(e) => setOwnerFilter(e.target.value)}
+          >
+            <option value="">All owners</option>
+            {owners.map((o) => <option key={o} value={o}>{o}</option>)}
+          </select>
+        )}
+        {(search || ownerFilter) && (
+          <button className="filter-clear" onClick={() => { setSearch(""); setOwnerFilter(""); }}>
+            ✕ Clear
+          </button>
+        )}
+      </div>
+
       <table className="data-table">
         <thead>
           <tr>
@@ -103,7 +151,10 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
+          {filtered.length === 0 && (
+            <tr><td colSpan={fields.length + 1} className="table-empty">No results found.</td></tr>
+          )}
+          {filtered.map((item) => (
             <Fragment key={item.id}>
               {editingId === item.id ? (
                 <tr className="editing-row">
