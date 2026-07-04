@@ -69,6 +69,7 @@ class Loan(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     bank_name = Column(String, nullable=False)
     loan_type = Column(String, nullable=False)
+    principal_amount = Column(Float, nullable=False, server_default="0")
     remaining_balance = Column(Float, nullable=False, default=0)
     monthly_payment = Column(Float, nullable=False, default=0)
     created_at = Column(DateTime, server_default=func.now())

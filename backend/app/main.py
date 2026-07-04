@@ -12,15 +12,18 @@ from app.routers import auth, dashboard, documents, gold, loans, properties, sil
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
-    # Add doc_type column if it doesn't exist yet (safe to run repeatedly)
+    # Add new columns if they don't exist yet (safe to run repeatedly)
+    migrations = [
+        "ALTER TABLE documents ADD COLUMN doc_type VARCHAR NOT NULL DEFAULT 'document'",
+        "ALTER TABLE loans ADD COLUMN principal_amount FLOAT NOT NULL DEFAULT 0",
+    ]
     with engine.connect() as conn:
-        try:
-            conn.execute(text(
-                "ALTER TABLE documents ADD COLUMN doc_type VARCHAR NOT NULL DEFAULT 'document'"
-            ))
-            conn.commit()
-        except Exception:
-            conn.rollback()
+        for sql in migrations:
+            try:
+                conn.execute(text(sql))
+                conn.commit()
+            except Exception:
+                conn.rollback()
     yield
 
 

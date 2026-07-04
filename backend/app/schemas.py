@@ -89,6 +89,7 @@ class SilverAssetOut(SilverAssetBase):
 class LoanBase(BaseModel):
     bank_name: str
     loan_type: str
+    principal_amount: float
     remaining_balance: float
     monthly_payment: float
 

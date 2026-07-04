@@ -167,7 +167,7 @@ export default function Dashboard() {
               return (
                 <div key={loan.id} className="loan-progress-item">
                   <div className="loan-progress-header">
-                    <span className="loan-name">{loan.lender_name}</span>
+                    <span className="loan-name">{loan.bank_name}</span>
                     <span className="loan-amounts">
                       {fmt.format(paid)} paid of {fmt.format(total)}
                     </span>
