@@ -106,6 +106,15 @@ class LoanOut(LoanBase):
     created_at: datetime
 
 
+# --- Profile update ---
+class ProfileUpdate(BaseModel):
+    name: str
+    email: EmailStr
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
 # --- Fixed Deposit ---
 class FixedDepositBase(BaseModel):
     bank_name: str

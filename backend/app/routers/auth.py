@@ -41,3 +41,34 @@ def login(payload: schemas.UserLogin, db: Session = Depends(get_db)):
 @router.get("/me", response_model=schemas.UserOut)
 def me(current_user: models.User = Depends(get_current_user)):
     return current_user
+
+
+@router.put("/profile", response_model=schemas.UserOut)
+def update_profile(
+    payload: schemas.ProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    if payload.email != current_user.email:
+        conflict = db.query(models.User).filter(models.User.email == payload.email).first()
+        if conflict:
+            raise HTTPException(status_code=400, detail="Email already in use")
+    current_user.name = payload.name
+    current_user.email = payload.email
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+
+@router.put("/password", status_code=204)
+def change_password(
+    payload: schemas.PasswordChange,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    if not verify_password(payload.current_password, current_user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    if len(payload.new_password) < 8:
+        raise HTTPException(status_code=400, detail="New password must be at least 8 characters")
+    current_user.password_hash = hash_password(payload.new_password)
+    db.commit()

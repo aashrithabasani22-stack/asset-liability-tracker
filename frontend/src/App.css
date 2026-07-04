@@ -473,6 +473,79 @@ h2 {
   background: #b91c1c;
 }
 
+/* Settings page */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.4rem;
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 720px) {
+  .settings-grid { grid-template-columns: 1fr; }
+}
+
+.settings-card {
+  padding: 1.6rem;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.settings-field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.settings-field input {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 0.95rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.settings-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.settings-btn {
+  padding: 0.65rem 1.2rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.15s;
+}
+
+.settings-btn:hover {
+  background: var(--accent-dark);
+}
+
+.success-msg {
+  color: var(--success);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 /* Dashboard header with currency switcher */
 .dashboard-header {
   display: flex;

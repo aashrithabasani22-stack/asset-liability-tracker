@@ -53,6 +53,7 @@ export default function Layout() {
 
           <Link to="/loans">Loans</Link>
           <Link to="/currency">Currency</Link>
+          <Link to="/settings">Settings</Link>
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
