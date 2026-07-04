@@ -61,6 +61,7 @@ function CustomLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent }) {
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [loans, setLoans] = useState([]);
+  const [creditCards, setCreditCards] = useState([]);
   const [properties, setProperties] = useState([]);
   const [goldAssets, setGoldAssets] = useState([]);
   const [silverAssets, setSilverAssets] = useState([]);
@@ -75,13 +76,15 @@ export default function Dashboard() {
     Promise.all([
       apiClient.get("/dashboard/summary"),
       apiClient.get("/loans"),
+      apiClient.get("/credit-cards"),
       apiClient.get("/properties"),
       apiClient.get("/gold"),
       apiClient.get("/silver"),
     ])
-      .then(([summaryRes, loansRes, propRes, goldRes, silverRes]) => {
+      .then(([summaryRes, loansRes, ccRes, propRes, goldRes, silverRes]) => {
         setSummary(summaryRes.data);
         setLoans(loansRes.data);
+        setCreditCards(ccRes.data);
         setProperties(propRes.data);
         setGoldAssets(goldRes.data);
         setSilverAssets(silverRes.data);
@@ -405,6 +408,62 @@ export default function Dashboard() {
                   </div>
                   {loan.payment_bank && (
                     <div className="loan-payment-bank">Debited from: {loan.payment_bank}</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {creditCards.length > 0 && (
+        <div className="card">
+          <h2>Credit Card Utilisation</h2>
+          <div className="loan-progress-list">
+            {creditCards.map((card) => {
+              const pct = card.credit_limit > 0
+                ? Math.min((card.outstanding_amount / card.credit_limit) * 100, 100)
+                : 0;
+              const available = card.credit_limit - card.outstanding_amount;
+              const fillColor = pct >= 90 ? "#ef4444" : pct >= 60 ? "#f97316" : "#4f46e5";
+              return (
+                <div key={card.id} className="loan-progress-item">
+                  <div className="loan-progress-header">
+                    <div>
+                      <span className="loan-name">{card.bank_name}</span>
+                      {card.card_name && (
+                        <span className="loan-type-badge">{card.card_name}</span>
+                      )}
+                    </div>
+                    <span className="loan-amounts">
+                      {fmt.format(cx(card.outstanding_amount))} used of {fmt.format(cx(card.credit_limit))}
+                    </span>
+                  </div>
+                  <div className="progress-track">
+                    <div className="progress-fill" style={{ width: `${pct}%`, background: fillColor }} />
+                  </div>
+                  <div className="loan-stats-row">
+                    <div className="loan-stat">
+                      <span className="loan-stat-label">Amount Due</span>
+                      <span className="loan-stat-value loan-remaining">{fmt.format(cx(card.outstanding_amount))}</span>
+                    </div>
+                    <div className="loan-stat">
+                      <span className="loan-stat-label">Available</span>
+                      <span className="loan-stat-value" style={{ color: "var(--success)" }}>{fmt.format(cx(available))}</span>
+                    </div>
+                    <div className="loan-stat">
+                      <span className="loan-stat-label">Utilisation</span>
+                      <span className="loan-stat-value" style={{ color: fillColor }}>{pct.toFixed(1)}%</span>
+                    </div>
+                    {card.due_date && (
+                      <div className="loan-stat">
+                        <span className="loan-stat-label">Due Date</span>
+                        <span className="loan-stat-value">{card.due_date}</span>
+                      </div>
+                    )}
+                  </div>
+                  {card.owner_name && (
+                    <div className="loan-payment-bank">Owner: {card.owner_name}</div>
                   )}
                 </div>
               );
