@@ -143,6 +143,7 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
         )}
       </div>
 
+      <div className="table-scroll">
       <table className="data-table">
         <thead>
           <tr>
@@ -201,6 +202,7 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

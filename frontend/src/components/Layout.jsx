@@ -36,6 +36,10 @@ function NavDropdown({ label, links }) {
 export default function Layout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   function handleLogout() {
     logout();
@@ -48,7 +52,12 @@ export default function Layout() {
         <div className="nav-brand">
           <Link to="/" style={{ color: "inherit", textDecoration: "none" }}>💰 Asset Tracker</Link>
         </div>
-        <div className="nav-links">
+
+        <button className="hamburger" onClick={() => setMenuOpen((o) => !o)} aria-label="Menu">
+          {menuOpen ? "✕" : "☰"}
+        </button>
+
+        <div className={`nav-links ${menuOpen ? "nav-open" : ""}`}>
           <Link to="/">Dashboard</Link>
 
           <NavDropdown label="Assets" links={[
