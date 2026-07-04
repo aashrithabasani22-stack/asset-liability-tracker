@@ -1,6 +1,18 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import apiClient from "../api/client";
 import AssetDocuments from "./AssetDocuments";
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(",").map((h) => h.trim());
+  return lines.slice(1).map((line) => {
+    const vals = line.split(",").map((v) => v.trim());
+    const row = {};
+    headers.forEach((h, i) => { row[h] = vals[i] ?? ""; });
+    return row;
+  });
+}
 
 function emptyForm(fields) {
   const out = {};
@@ -23,6 +35,9 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
   const [editForm, setEditForm] = useState({});
   const [expandedId, setExpandedId] = useState(null);
   const [error, setError] = useState("");
+  const [importMsg, setImportMsg] = useState("");
+  const [importing, setImporting] = useState(false);
+  const fileRef = useRef(null);
 
   const [search, setSearch] = useState("");
   const [ownerFilter, setOwnerFilter] = useState("");
@@ -89,6 +104,53 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
     }
   }
 
+  function downloadTemplate() {
+    const headers = fields.map((f) => f.name).join(",");
+    const example = fields.map((f) => f.type === "number" ? "0" : "example").join(",");
+    const csv = `${headers}\n${example}`;
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${title.toLowerCase().replace(/\s+/g, "-")}-template.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function handleImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = "";
+    setImporting(true);
+    setImportMsg("");
+    setError("");
+    const text = await file.text();
+    const rows = parseCSV(text);
+    if (rows.length === 0) {
+      setError("CSV is empty or has no data rows.");
+      setImporting(false);
+      return;
+    }
+    let ok = 0;
+    let fail = 0;
+    for (const row of rows) {
+      const payload = {};
+      fields.forEach((f) => {
+        const val = row[f.name] ?? "";
+        payload[f.name] = f.type === "number" ? Number(val || 0) : val;
+      });
+      try {
+        await apiClient.post(endpoint, payload);
+        ok++;
+      } catch {
+        fail++;
+      }
+    }
+    load();
+    setImporting(false);
+    setImportMsg(`Imported ${ok} row${ok !== 1 ? "s" : ""}${fail ? `, ${fail} failed` : ""}.`);
+  }
+
   async function handleDelete(id) {
     if (editingId === id) cancelEdit();
     await apiClient.delete(`${endpoint}/${id}`);
@@ -99,9 +161,17 @@ export default function CrudPage({ title, endpoint, fields, assetType }) {
     <div>
       <div className="page-header">
         <h1>{title}</h1>
-        <span className="item-count">{filtered.length} of {items.length}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+          <span className="item-count">{filtered.length} of {items.length}</span>
+          <button className="export-btn" onClick={downloadTemplate} title="Download CSV template">⬇ Template</button>
+          <button className="export-btn export-btn-green" onClick={() => fileRef.current?.click()} disabled={importing}>
+            {importing ? "Importing…" : "⬆ Import CSV"}
+          </button>
+          <input ref={fileRef} type="file" accept=".csv,text/csv" hidden onChange={handleImport} />
+        </div>
       </div>
       {error && <p className="error">{error}</p>}
+      {importMsg && <p className="import-msg">{importMsg}</p>}
 
       <form className="crud-form" onSubmit={handleAdd}>
         {fields.map((f) => (

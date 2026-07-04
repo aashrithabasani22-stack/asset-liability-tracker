@@ -616,6 +616,16 @@ h2 {
   margin: 0;
 }
 
+.import-msg {
+  color: #065f46;
+  background: #d1fae5;
+  border: 1px solid #6ee7b7;
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
 /* Dashboard header with currency switcher */
 .dashboard-header {
   display: flex;
