@@ -141,6 +141,37 @@ class OtherAsset(Base):
     owner = relationship("User", backref="other_assets")
 
 
+class BankAccount(Base):
+    __tablename__ = "bank_accounts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    bank_name = Column(String, nullable=False)
+    account_number = Column(String, nullable=True)
+    account_type = Column(String, nullable=True)
+    balance = Column(Float, nullable=False, default=0)
+    owner_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="bank_accounts")
+
+
+class CreditCard(Base):
+    __tablename__ = "credit_cards"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    bank_name = Column(String, nullable=False)
+    card_name = Column(String, nullable=True)
+    credit_limit = Column(Float, nullable=False, default=0)
+    outstanding_amount = Column(Float, nullable=False, default=0)
+    due_date = Column(String, nullable=True)
+    owner_name = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="credit_cards")
+
+
 class Document(Base):
     __tablename__ = "documents"
 

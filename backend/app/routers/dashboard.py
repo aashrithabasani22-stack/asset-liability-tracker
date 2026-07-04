@@ -25,6 +25,8 @@ def get_summary(
     mfs = db.query(models.MutualFund).filter(models.MutualFund.user_id == uid).all()
     vehicles = db.query(models.Vehicle).filter(models.Vehicle.user_id == uid).all()
     others = db.query(models.OtherAsset).filter(models.OtherAsset.user_id == uid).all()
+    bank_accounts = db.query(models.BankAccount).filter(models.BankAccount.user_id == uid).all()
+    credit_cards = db.query(models.CreditCard).filter(models.CreditCard.user_id == uid).all()
 
     total_real_estate_value = sum(p.current_value for p in properties)
     total_gold_value = sum(g.weight_grams * gold_rate * (g.purity_karat / 24) for g in gold_assets)
@@ -33,12 +35,17 @@ def get_summary(
     total_mf_value = sum(mf.current_value for mf in mfs)
     total_vehicle_value = sum(v.current_value for v in vehicles)
     total_other_value = sum(o.current_value for o in others)
+    total_bank_balance = sum(b.balance for b in bank_accounts)
 
     total_assets = (
         total_real_estate_value + total_gold_value + total_silver_value +
-        total_fd_value + total_mf_value + total_vehicle_value + total_other_value
+        total_fd_value + total_mf_value + total_vehicle_value + total_other_value +
+        total_bank_balance
     )
-    total_liabilities = sum(l.remaining_balance for l in loans)
+
+    total_loan_balance = sum(l.remaining_balance for l in loans)
+    total_credit_card_outstanding = sum(c.outstanding_amount for c in credit_cards)
+    total_liabilities = total_loan_balance + total_credit_card_outstanding
 
     return schemas.DashboardSummary(
         total_real_estate_value=total_real_estate_value,
@@ -48,7 +55,9 @@ def get_summary(
         total_mf_value=total_mf_value,
         total_vehicle_value=total_vehicle_value,
         total_other_value=total_other_value,
+        total_bank_balance=total_bank_balance,
         total_assets=total_assets,
+        total_credit_card_outstanding=total_credit_card_outstanding,
         total_liabilities=total_liabilities,
         net_worth=total_assets - total_liabilities,
         gold_rate_per_gram_24k=gold_rate,

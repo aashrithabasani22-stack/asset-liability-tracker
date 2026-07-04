@@ -106,6 +106,41 @@ class LoanOut(LoanBase):
     created_at: datetime
 
 
+# --- Bank Account ---
+class BankAccountBase(BaseModel):
+    bank_name: str
+    account_number: str | None = None
+    account_type: str | None = None
+    balance: float
+    owner_name: str | None = None
+
+class BankAccountCreate(BankAccountBase):
+    pass
+
+class BankAccountOut(BankAccountBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
+# --- Credit Card ---
+class CreditCardBase(BaseModel):
+    bank_name: str
+    card_name: str | None = None
+    credit_limit: float
+    outstanding_amount: float
+    due_date: str | None = None
+    owner_name: str | None = None
+
+class CreditCardCreate(CreditCardBase):
+    pass
+
+class CreditCardOut(CreditCardBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
 # --- Profile update ---
 class ProfileUpdate(BaseModel):
     name: str
@@ -209,7 +244,9 @@ class DashboardSummary(BaseModel):
     total_mf_value: float
     total_vehicle_value: float
     total_other_value: float
+    total_bank_balance: float
     total_assets: float
+    total_credit_card_outstanding: float
     total_liabilities: float
     net_worth: float
     gold_rate_per_gram_24k: float

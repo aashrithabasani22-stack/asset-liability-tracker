@@ -16,6 +16,8 @@ import MutualFunds from "./pages/MutualFunds";
 import Vehicles from "./pages/Vehicles";
 import OtherAssets from "./pages/OtherAssets";
 import Settings from "./pages/Settings";
+import BankAccounts from "./pages/BankAccounts";
+import CreditCards from "./pages/CreditCards";
 
 export default function App() {
   return (
@@ -42,6 +44,8 @@ export default function App() {
             <Route path="/other-assets" element={<OtherAssets />} />
             <Route path="/currency" element={<CurrencyConverter />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/bank-accounts" element={<BankAccounts />} />
+            <Route path="/credit-cards" element={<CreditCards />} />
           </Route>
         </Routes>
       </BrowserRouter>

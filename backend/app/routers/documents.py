@@ -22,6 +22,8 @@ ASSET_MODELS = {
     "mf": models.MutualFund,
     "vehicle": models.Vehicle,
     "other": models.OtherAsset,
+    "bank": models.BankAccount,
+    "cc": models.CreditCard,
 }
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024

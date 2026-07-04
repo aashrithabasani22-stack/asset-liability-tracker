@@ -41,6 +41,7 @@ const COLORS = {
   "MF & Stocks": "#8b5cf6",
   Vehicles: "#f97316",
   Other: "#6b7280",
+  "Bank Accounts": "#10b981",
   Liabilities: "#ef4444",
 };
 
@@ -233,6 +234,7 @@ export default function Dashboard() {
     { name: "MF & Stocks", value: summary.total_mf_value },
     { name: "Vehicles", value: summary.total_vehicle_value },
     { name: "Other", value: summary.total_other_value },
+    { name: "Bank Accounts", value: summary.total_bank_balance },
     { name: "Liabilities", value: summary.total_liabilities },
   ].filter((d) => d.value > 0);
 
@@ -278,6 +280,10 @@ export default function Dashboard() {
         <div className="card">
           <h3>Total Liabilities</h3>
           <p className="big-number">{fmt.format(cx(summary.total_liabilities))}</p>
+        </div>
+        <div className="card">
+          <h3>Credit Card Due</h3>
+          <p className="big-number negative">{fmt.format(cx(summary.total_credit_card_outstanding))}</p>
         </div>
       </div>
 
@@ -344,6 +350,7 @@ export default function Dashboard() {
               <tr><td>MF &amp; Stocks</td><td className="rate-value">{fmt.format(cx(summary.total_mf_value))}</td></tr>
               <tr><td>Vehicles</td><td className="rate-value">{fmt.format(cx(summary.total_vehicle_value))}</td></tr>
               <tr><td>Other</td><td className="rate-value">{fmt.format(cx(summary.total_other_value))}</td></tr>
+              <tr><td>Bank Accounts</td><td className="rate-value">{fmt.format(cx(summary.total_bank_balance))}</td></tr>
             </tbody>
           </table>
         </div>
