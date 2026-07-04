@@ -9,11 +9,26 @@ import {
 } from "recharts";
 import apiClient from "../api/client";
 
-const fmt = new Intl.NumberFormat("en-IN", {
-  style: "currency",
-  currency: "INR",
-  maximumFractionDigits: 0,
-});
+const CURRENCIES = [
+  { code: "INR", label: "₹ INR" },
+  { code: "USD", label: "$ USD" },
+  { code: "EUR", label: "€ EUR" },
+  { code: "GBP", label: "£ GBP" },
+  { code: "AED", label: "AED" },
+  { code: "SGD", label: "SGD" },
+  { code: "AUD", label: "AUD" },
+  { code: "CAD", label: "CAD" },
+  { code: "JPY", label: "¥ JPY" },
+  { code: "SAR", label: "SAR" },
+];
+
+function makeFmt(currency) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: currency === "JPY" ? 0 : 2,
+  });
+}
 
 const COLORS = {
   "Real Estate": "#4f46e5",
@@ -40,6 +55,11 @@ export default function Dashboard() {
   const [loans, setLoans] = useState([]);
   const [error, setError] = useState("");
 
+  const [currency, setCurrency] = useState("INR");
+  const [fxRate, setFxRate] = useState(1);
+  const [fxLoading, setFxLoading] = useState(false);
+  const [fxDate, setFxDate] = useState("");
+
   useEffect(() => {
     Promise.all([
       apiClient.get("/dashboard/summary"),
@@ -52,8 +72,24 @@ export default function Dashboard() {
       .catch((err) => setError(err.response?.data?.detail || "Failed to load dashboard"));
   }, []);
 
+  useEffect(() => {
+    if (currency === "INR") { setFxRate(1); setFxDate(""); return; }
+    setFxLoading(true);
+    fetch(`https://api.frankfurter.app/latest?from=INR&to=${currency}`)
+      .then((r) => r.json())
+      .then((data) => {
+        setFxRate(data.rates[currency]);
+        setFxDate(data.date);
+      })
+      .catch(() => setFxRate(1))
+      .finally(() => setFxLoading(false));
+  }, [currency]);
+
   if (error) return <p className="error">{error}</p>;
   if (!summary) return <p>Loading...</p>;
+
+  const fmt = makeFmt(currency);
+  const cx = (inr) => inr * fxRate;
 
   const pieData = [
     { name: "Real Estate", value: summary.total_real_estate_value },
@@ -64,22 +100,40 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>Net Worth Dashboard</h1>
+      <div className="dashboard-header">
+        <h1>Net Worth Dashboard</h1>
+        <div className="currency-switcher">
+          <label className="currency-switcher-label">View in</label>
+          <select
+            className="currency-switcher-select"
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+          >
+            {CURRENCIES.map((c) => (
+              <option key={c.code} value={c.code}>{c.label}</option>
+            ))}
+          </select>
+          {fxLoading && <span className="fx-loading">updating…</span>}
+          {fxDate && !fxLoading && (
+            <span className="fx-date">Rate: {fxDate}</span>
+          )}
+        </div>
+      </div>
 
       <div className="card-grid">
         <div className="card card-accent">
           <h3>Net Worth</h3>
           <p className={`big-number ${summary.net_worth >= 0 ? "positive" : "negative"}`}>
-            {fmt.format(summary.net_worth)}
+            {fmt.format(cx(summary.net_worth))}
           </p>
         </div>
         <div className="card">
           <h3>Total Assets</h3>
-          <p className="big-number">{fmt.format(summary.total_assets)}</p>
+          <p className="big-number">{fmt.format(cx(summary.total_assets))}</p>
         </div>
         <div className="card">
           <h3>Total Liabilities</h3>
-          <p className="big-number">{fmt.format(summary.total_liabilities)}</p>
+          <p className="big-number">{fmt.format(cx(summary.total_liabilities))}</p>
         </div>
       </div>
 
@@ -106,7 +160,7 @@ export default function Dashboard() {
                     <Cell key={entry.name} fill={COLORS[entry.name] || "#6366f1"} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => fmt.format(value)} />
+                <Tooltip formatter={(value) => fmt.format(cx(value))} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -122,15 +176,15 @@ export default function Dashboard() {
             <tbody>
               <tr>
                 <td>🥇 Gold 24k</td>
-                <td className="rate-value">{fmt.format(summary.gold_rate_per_gram_24k)}/g</td>
+                <td className="rate-value">{fmt.format(cx(summary.gold_rate_per_gram_24k))}/g</td>
               </tr>
               <tr>
                 <td>🥈 Silver</td>
-                <td className="rate-value">{fmt.format(summary.silver_rate_per_gram)}/g</td>
+                <td className="rate-value">{fmt.format(cx(summary.silver_rate_per_gram))}/g</td>
               </tr>
               <tr>
                 <td>⬜ Platinum</td>
-                <td className="rate-value">{fmt.format(summary.platinum_rate_per_gram)}/g</td>
+                <td className="rate-value">{fmt.format(cx(summary.platinum_rate_per_gram))}/g</td>
               </tr>
             </tbody>
           </table>
@@ -141,15 +195,15 @@ export default function Dashboard() {
             <tbody>
               <tr>
                 <td>Real Estate</td>
-                <td className="rate-value">{fmt.format(summary.total_real_estate_value)}</td>
+                <td className="rate-value">{fmt.format(cx(summary.total_real_estate_value))}</td>
               </tr>
               <tr>
                 <td>Gold</td>
-                <td className="rate-value">{fmt.format(summary.total_gold_value)}</td>
+                <td className="rate-value">{fmt.format(cx(summary.total_gold_value))}</td>
               </tr>
               <tr>
                 <td>Silver</td>
-                <td className="rate-value">{fmt.format(summary.total_silver_value)}</td>
+                <td className="rate-value">{fmt.format(cx(summary.total_silver_value))}</td>
               </tr>
             </tbody>
           </table>
@@ -177,7 +231,7 @@ export default function Dashboard() {
                       )}
                     </div>
                     <span className="loan-amounts">
-                      {fmt.format(paid)} paid of {fmt.format(total)}
+                      {fmt.format(cx(paid))} paid of {fmt.format(cx(total))}
                     </span>
                   </div>
                   <div className="progress-track">
@@ -186,11 +240,11 @@ export default function Dashboard() {
                   <div className="loan-stats-row">
                     <div className="loan-stat">
                       <span className="loan-stat-label">Outstanding</span>
-                      <span className="loan-stat-value loan-remaining">{fmt.format(loan.remaining_balance)}</span>
+                      <span className="loan-stat-value loan-remaining">{fmt.format(cx(loan.remaining_balance))}</span>
                     </div>
                     <div className="loan-stat">
                       <span className="loan-stat-label">Monthly EMI</span>
-                      <span className="loan-stat-value">{fmt.format(loan.monthly_payment)}</span>
+                      <span className="loan-stat-value">{fmt.format(cx(loan.monthly_payment))}</span>
                     </div>
                     {monthsLeft !== null && (
                       <div className="loan-stat">

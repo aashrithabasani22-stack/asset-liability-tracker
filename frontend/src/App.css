@@ -430,6 +430,63 @@ h2 {
   background: #b91c1c;
 }
 
+/* Dashboard header with currency switcher */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.dashboard-header h1 {
+  margin: 0;
+}
+
+.currency-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.currency-switcher-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.currency-switcher-select {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: white;
+  color: var(--accent);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.currency-switcher-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.fx-loading {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.fx-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 /* Currency Converter */
 .converter-card {
   padding: 1.8rem;
