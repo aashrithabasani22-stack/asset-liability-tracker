@@ -2,6 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+function useDarkMode() {
+  const [dark, setDark] = useState(() => localStorage.getItem("theme") === "dark");
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
+  return [dark, setDark];
+}
+
 function NavDropdown({ label, links }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -38,6 +47,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dark, setDark] = useDarkMode();
 
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
@@ -79,6 +89,9 @@ export default function Layout() {
           <Link to="/family">Family</Link>
           <Link to="/currency">Currency</Link>
           <Link to="/settings">Settings</Link>
+          <button className="theme-toggle" onClick={() => setDark((d) => !d)} title={dark ? "Switch to light mode" : "Switch to dark mode"}>
+            {dark ? "☀" : "🌙"}
+          </button>
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>

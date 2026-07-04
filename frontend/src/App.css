@@ -7,12 +7,96 @@
   --accent-dark: #4338ca;
   --bg: #f3f4f8;
   --surface: #ffffff;
+  --card-bg: #ffffff;
   --border: #e5e7eb;
   --text: #111827;
   --text-muted: #6b7280;
   --success: #16a34a;
   --danger: #dc2626;
   --radius: 10px;
+}
+
+html.dark {
+  --accent: #6366f1;
+  --accent-dark: #4f46e5;
+  --bg: #0f0e17;
+  --surface: #1a1929;
+  --card-bg: #1a1929;
+  --border: #2d2b45;
+  --text: #e8e6f0;
+  --text-muted: #8b8aac;
+  --success: #34d399;
+  --danger: #f87171;
+}
+
+html.dark body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+html.dark .card-accent {
+  background: linear-gradient(135deg, #1e1b4b44, #1a1929);
+}
+
+html.dark .data-table th,
+html.dark .data-table tbody tr:hover {
+  background: #24223a;
+}
+
+html.dark .nav-dropdown-menu {
+  background: #24223a;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+html.dark .nav-dropdown-menu a {
+  color: var(--text) !important;
+}
+
+html.dark .nav-dropdown-menu a:hover {
+  background: #2d2b45;
+  color: var(--accent) !important;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background: #24223a;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+html.dark .alert-warning {
+  background: #451a03;
+  color: #fcd34d;
+  border-color: #d97706;
+}
+
+html.dark .alert-danger {
+  background: #450a0a;
+  color: #fca5a5;
+  border-color: #dc2626;
+}
+
+html.dark .import-msg,
+html.dark .success-msg {
+  background: #052e16;
+  color: #6ee7b7;
+  border-color: #065f46;
+}
+
+html.dark .invite-code {
+  background: #24223a;
+}
+
+html.dark .view-toggle {
+  background: #24223a;
+  border-color: var(--border);
+}
+
+html.dark .filter-bar input,
+html.dark .filter-bar select {
+  background: #24223a;
+  color: var(--text);
 }
 
 body {
@@ -121,6 +205,22 @@ h2 {
 .nav-dropdown-menu a:hover {
   background: #f3f4f6;
   color: var(--accent) !important;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.3rem 0.55rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .logout-btn {
