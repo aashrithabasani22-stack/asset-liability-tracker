@@ -72,6 +72,7 @@ class Loan(Base):
     principal_amount = Column(Float, nullable=False, server_default="0")
     remaining_balance = Column(Float, nullable=False, default=0)
     monthly_payment = Column(Float, nullable=False, default=0)
+    payment_bank = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
     owner = relationship("User", back_populates="loans")

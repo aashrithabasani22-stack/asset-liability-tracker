@@ -92,6 +92,7 @@ class LoanBase(BaseModel):
     principal_amount: float
     remaining_balance: float
     monthly_payment: float
+    payment_bank: str | None = None
 
 
 class LoanCreate(LoanBase):
