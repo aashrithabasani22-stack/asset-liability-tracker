@@ -20,6 +20,7 @@ export default function Layout() {
           <Link to="/gold">Gold</Link>
           <Link to="/silver">Silver</Link>
           <Link to="/loans">Loans</Link>
+          <Link to="/currency">Currency</Link>
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>

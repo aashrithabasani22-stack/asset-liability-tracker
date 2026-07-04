@@ -430,6 +430,136 @@ h2 {
   background: #b91c1c;
 }
 
+/* Currency Converter */
+.converter-card {
+  padding: 1.8rem;
+}
+
+.converter-row {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.converter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.converter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.converter-input,
+.converter-select {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 1rem;
+  background: white;
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.converter-input:focus,
+.converter-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.swap-btn {
+  padding: 0.65rem 0.9rem;
+  background: #f3f4f6;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.15s;
+  line-height: 1;
+}
+
+.swap-btn:hover {
+  background: #e5e7eb;
+}
+
+.converter-btn {
+  padding: 0.65rem 1.4rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.15s;
+}
+
+.converter-btn:hover:not(:disabled) {
+  background: var(--accent-dark);
+}
+
+.converter-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.converter-result {
+  margin-top: 1.8rem;
+  padding: 1.4rem;
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+  border-radius: 10px;
+  border: 1px solid #c7d2fe;
+}
+
+.result-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.result-from {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.result-equals {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+}
+
+.result-to {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.result-rate {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.result-date {
+  font-style: italic;
+}
+
+.converter-quick-ref {
+  padding: 1.4rem 1.8rem;
+}
+
 /* Charts */
 .charts-row {
   display: grid;
