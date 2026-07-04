@@ -173,6 +173,17 @@ class CreditCard(Base):
     owner = relationship("User", backref="credit_cards")
 
 
+class NetWorthSnapshot(Base):
+    __tablename__ = "networth_snapshots"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(String, nullable=False)
+    net_worth = Column(Float, nullable=False)
+    total_assets = Column(Float, nullable=False)
+    total_liabilities = Column(Float, nullable=False)
+
+
 class FamilyGroup(Base):
     __tablename__ = "family_groups"
 

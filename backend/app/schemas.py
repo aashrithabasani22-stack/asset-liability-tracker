@@ -236,6 +236,14 @@ class DocumentOut(BaseModel):
     url: str
 
 
+# --- Net Worth History ---
+class SnapshotOut(BaseModel):
+    date: str
+    net_worth: float
+    total_assets: float
+    total_liabilities: float
+
+
 # --- Family ---
 class FamilyGroupCreate(BaseModel):
     name: str

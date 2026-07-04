@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
+  PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -66,6 +62,7 @@ export default function Dashboard() {
   const [goldAssets, setGoldAssets] = useState([]);
   const [silverAssets, setSilverAssets] = useState([]);
   const [familyData, setFamilyData] = useState(null);
+  const [history, setHistory] = useState([]);
   const [view, setView] = useState("personal");
   const [error, setError] = useState("");
 
@@ -92,6 +89,9 @@ export default function Dashboard() {
         setGoldAssets(goldRes.data);
         setSilverAssets(silverRes.data);
         if (familyRes) setFamilyData(familyRes.data);
+        apiClient.post("/networth/snapshot").then(() =>
+          apiClient.get("/networth/history?days=365").then((r) => setHistory(r.data))
+        ).catch(() => {});
       })
       .catch((err) => setError(err.response?.data?.detail || "Failed to load dashboard"));
   }, []);
@@ -474,6 +474,43 @@ export default function Dashboard() {
           </table>
         </div>
       </div>
+
+      {history.length > 1 && (
+        <div className="card" style={{ marginTop: "1.5rem" }}>
+          <h2>Net Worth Over Time</h2>
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={history} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                tickFormatter={(d) => {
+                  const [, m, day] = d.split("-");
+                  return `${day}/${m}`;
+                }}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "var(--text-muted)" }}
+                tickFormatter={(v) => {
+                  if (Math.abs(v) >= 1e7) return `${(v / 1e7).toFixed(1)}Cr`;
+                  if (Math.abs(v) >= 1e5) return `${(v / 1e5).toFixed(1)}L`;
+                  return v;
+                }}
+                width={64}
+              />
+              <Tooltip
+                formatter={(value, name) => [fmt.format(cx(value)), name === "net_worth" ? "Net Worth" : name === "total_assets" ? "Assets" : "Liabilities"]}
+                labelFormatter={(d) => `Date: ${d}`}
+              />
+              <Legend formatter={(val) => val === "net_worth" ? "Net Worth" : val === "total_assets" ? "Assets" : "Liabilities"} />
+              <Line type="monotone" dataKey="total_assets" stroke="#10b981" dot={false} strokeWidth={2} />
+              <Line type="monotone" dataKey="total_liabilities" stroke="#ef4444" dot={false} strokeWidth={2} />
+              <Line type="monotone" dataKey="net_worth" stroke="#4f46e5" dot={false} strokeWidth={2.5} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
       {loans.length > 0 && (
         <div className="card">
