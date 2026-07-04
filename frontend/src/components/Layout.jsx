@@ -1,12 +1,41 @@
-import { useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+
+function NavDropdown({ label, links }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => { setOpen(false); }, [location.pathname]);
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div className="nav-dropdown" ref={ref}>
+      <button className="nav-dropdown-trigger" onClick={() => setOpen((o) => !o)}>
+        {label} {open ? "▴" : "▾"}
+      </button>
+      {open && (
+        <div className="nav-dropdown-menu">
+          {links.map((l) => (
+            <Link key={l.to} to={l.to}>{l.label}</Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Layout() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [assetsOpen, setAssetsOpen] = useState(false);
-  const [liabOpen, setLiabOpen] = useState(false);
 
   function handleLogout() {
     logout();
@@ -22,39 +51,21 @@ export default function Layout() {
         <div className="nav-links">
           <Link to="/">Dashboard</Link>
 
-          <div className="nav-dropdown" onMouseEnter={() => setAssetsOpen(true)} onMouseLeave={() => setAssetsOpen(false)}>
-            <span className="nav-dropdown-trigger">Assets ▾</span>
-            {assetsOpen && (
-              <div className="nav-dropdown-menu">
-                {[
-                  { to: "/properties", label: "Real Estate" },
-                  { to: "/gold", label: "Gold" },
-                  { to: "/silver", label: "Silver" },
-                  { to: "/bank-accounts", label: "Bank Accounts" },
-                  { to: "/fixed-deposits", label: "Fixed Deposits" },
-                  { to: "/mutual-funds", label: "MF & Stocks" },
-                  { to: "/vehicles", label: "Vehicles" },
-                  { to: "/other-assets", label: "Other" },
-                ].map((l) => (
-                  <Link key={l.to} to={l.to} onClick={() => setAssetsOpen(false)}>{l.label}</Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <NavDropdown label="Assets" links={[
+            { to: "/properties", label: "Real Estate" },
+            { to: "/gold", label: "Gold" },
+            { to: "/silver", label: "Silver" },
+            { to: "/bank-accounts", label: "Bank Accounts" },
+            { to: "/fixed-deposits", label: "Fixed Deposits" },
+            { to: "/mutual-funds", label: "MF & Stocks" },
+            { to: "/vehicles", label: "Vehicles" },
+            { to: "/other-assets", label: "Other" },
+          ]} />
 
-          <div className="nav-dropdown" onMouseEnter={() => setLiabOpen(true)} onMouseLeave={() => setLiabOpen(false)}>
-            <span className="nav-dropdown-trigger">Liabilities ▾</span>
-            {liabOpen && (
-              <div className="nav-dropdown-menu">
-                {[
-                  { to: "/loans", label: "Loans" },
-                  { to: "/credit-cards", label: "Credit Cards" },
-                ].map((l) => (
-                  <Link key={l.to} to={l.to} onClick={() => setLiabOpen(false)}>{l.label}</Link>
-                ))}
-              </div>
-            )}
-          </div>
+          <NavDropdown label="Liabilities" links={[
+            { to: "/loans", label: "Loans" },
+            { to: "/credit-cards", label: "Credit Cards" },
+          ]} />
 
           <Link to="/currency">Currency</Link>
           <Link to="/settings">Settings</Link>
