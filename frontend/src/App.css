@@ -518,5 +518,51 @@ h2 {
 
 .loan-remaining {
   color: var(--danger);
-  font-weight: 500;
+  font-weight: 600;
+}
+
+.loan-type-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #e0e7ff;
+  color: var(--accent);
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  vertical-align: middle;
+}
+
+.loan-stats-row {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: 0.4rem;
+}
+
+.loan-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 90px;
+}
+
+.loan-stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.loan-stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.loan-payment-bank {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }

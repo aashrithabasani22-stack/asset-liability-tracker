@@ -164,24 +164,48 @@ export default function Dashboard() {
               const total = loan.principal_amount;
               const paid = total - loan.remaining_balance;
               const pct = total > 0 ? Math.min((paid / total) * 100, 100) : 0;
+              const monthsLeft = loan.monthly_payment > 0
+                ? Math.ceil(loan.remaining_balance / loan.monthly_payment)
+                : null;
               return (
                 <div key={loan.id} className="loan-progress-item">
                   <div className="loan-progress-header">
-                    <span className="loan-name">{loan.bank_name}</span>
+                    <div>
+                      <span className="loan-name">{loan.bank_name}</span>
+                      {loan.loan_type && (
+                        <span className="loan-type-badge">{loan.loan_type}</span>
+                      )}
+                    </div>
                     <span className="loan-amounts">
                       {fmt.format(paid)} paid of {fmt.format(total)}
                     </span>
                   </div>
                   <div className="progress-track">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${pct}%` }}
-                    />
+                    <div className="progress-fill" style={{ width: `${pct}%` }} />
                   </div>
-                  <div className="loan-progress-footer">
-                    <span>{pct.toFixed(1)}% repaid</span>
-                    <span className="loan-remaining">{fmt.format(loan.remaining_balance)} remaining</span>
+                  <div className="loan-stats-row">
+                    <div className="loan-stat">
+                      <span className="loan-stat-label">Outstanding</span>
+                      <span className="loan-stat-value loan-remaining">{fmt.format(loan.remaining_balance)}</span>
+                    </div>
+                    <div className="loan-stat">
+                      <span className="loan-stat-label">Monthly EMI</span>
+                      <span className="loan-stat-value">{fmt.format(loan.monthly_payment)}</span>
+                    </div>
+                    {monthsLeft !== null && (
+                      <div className="loan-stat">
+                        <span className="loan-stat-label">Est. months left</span>
+                        <span className="loan-stat-value">{monthsLeft}</span>
+                      </div>
+                    )}
+                    <div className="loan-stat">
+                      <span className="loan-stat-label">% Repaid</span>
+                      <span className="loan-stat-value">{pct.toFixed(1)}%</span>
+                    </div>
                   </div>
+                  {loan.payment_bank && (
+                    <div className="loan-payment-bank">Debited from: {loan.payment_bank}</div>
+                  )}
                 </div>
               );
             })}
