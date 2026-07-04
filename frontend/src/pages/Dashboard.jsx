@@ -65,6 +65,8 @@ export default function Dashboard() {
   const [properties, setProperties] = useState([]);
   const [goldAssets, setGoldAssets] = useState([]);
   const [silverAssets, setSilverAssets] = useState([]);
+  const [familyData, setFamilyData] = useState(null);
+  const [view, setView] = useState("personal");
   const [error, setError] = useState("");
 
   const [currency, setCurrency] = useState("INR");
@@ -80,14 +82,16 @@ export default function Dashboard() {
       apiClient.get("/properties"),
       apiClient.get("/gold"),
       apiClient.get("/silver"),
+      apiClient.get("/family/dashboard").catch(() => null),
     ])
-      .then(([summaryRes, loansRes, ccRes, propRes, goldRes, silverRes]) => {
+      .then(([summaryRes, loansRes, ccRes, propRes, goldRes, silverRes, familyRes]) => {
         setSummary(summaryRes.data);
         setLoans(loansRes.data);
         setCreditCards(ccRes.data);
         setProperties(propRes.data);
         setGoldAssets(goldRes.data);
         setSilverAssets(silverRes.data);
+        if (familyRes) setFamilyData(familyRes.data);
       })
       .catch((err) => setError(err.response?.data?.detail || "Failed to load dashboard"));
   }, []);
@@ -268,7 +272,23 @@ export default function Dashboard() {
   return (
     <div>
       <div className="dashboard-header">
-        <h1>Net Worth Dashboard</h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <h1 style={{ margin: 0 }}>
+            {view === "family" && familyData ? `${familyData.group_name} — ` : ""}Net Worth Dashboard
+          </h1>
+          {familyData && (
+            <div className="view-toggle">
+              <button
+                className={`view-toggle-btn ${view === "personal" ? "active" : ""}`}
+                onClick={() => setView("personal")}
+              >Personal</button>
+              <button
+                className={`view-toggle-btn ${view === "family" ? "active" : ""}`}
+                onClick={() => setView("family")}
+              >Family</button>
+            </div>
+          )}
+        </div>
         <div className="dashboard-actions">
           <div className="currency-switcher">
           <label className="currency-switcher-label">View in</label>
@@ -293,6 +313,69 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {view === "family" && familyData ? (
+        <>
+          <div className="card-grid">
+            <div className="card card-accent">
+              <h3>Combined Net Worth</h3>
+              <p className={`big-number ${familyData.combined_net_worth >= 0 ? "positive" : "negative"}`}>
+                {fmt.format(cx(familyData.combined_net_worth))}
+              </p>
+            </div>
+            <div className="card">
+              <h3>Combined Assets</h3>
+              <p className="big-number">{fmt.format(cx(familyData.combined_assets))}</p>
+            </div>
+            <div className="card">
+              <h3>Combined Liabilities</h3>
+              <p className="big-number">{fmt.format(cx(familyData.combined_liabilities))}</p>
+            </div>
+            <div className="card">
+              <h3>Members</h3>
+              <p className="big-number">{familyData.members.length}</p>
+            </div>
+          </div>
+
+          <div className="card">
+            <h2>Members breakdown</h2>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Total Assets</th>
+                    <th>Total Liabilities</th>
+                    <th>Net Worth</th>
+                    <th>Share of family</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {familyData.members.map((m) => {
+                    const sharePct = familyData.combined_assets > 0
+                      ? ((m.total_assets / familyData.combined_assets) * 100).toFixed(1)
+                      : "0.0";
+                    return (
+                      <tr key={m.user_id}>
+                        <td><strong>{m.name}</strong><br /><span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{m.email}</span></td>
+                        <td>{fmt.format(cx(m.total_assets))}</td>
+                        <td>{fmt.format(cx(m.total_liabilities))}</td>
+                        <td className={m.net_worth >= 0 ? "positive" : "negative"}>{fmt.format(cx(m.net_worth))}</td>
+                        <td>
+                          <div className="progress-track" style={{ width: 100, display: "inline-block" }}>
+                            <div className="progress-fill" style={{ width: `${sharePct}%` }} />
+                          </div>
+                          <span style={{ marginLeft: "0.5rem", fontSize: "0.85rem" }}>{sharePct}%</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
       <div className="card-grid">
         <div className="card card-accent">
           <h3>Net Worth</h3>
@@ -503,6 +586,8 @@ export default function Dashboard() {
             })}
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );
