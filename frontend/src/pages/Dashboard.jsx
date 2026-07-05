@@ -21,9 +21,6 @@ const CURRENCIES = [
   { code: "MYR", label: "MYR" },
 ];
 
-// ECB-supported codes only; exclude INR (fetched separately) and EUR (it's the base)
-const FX_CODES = "INR,USD,GBP,SGD,AUD,CAD,JPY,CHF,MYR";
-
 function makeFmt(currency) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -109,21 +106,11 @@ export default function Dashboard() {
   useEffect(() => {
     setFxLoading(true);
     setFxError("");
-    fetch(`https://api.frankfurter.dev/v1/latest?from=EUR&to=${FX_CODES}`)
+    apiClient.get("/market/fx")
       .then((r) => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return r.json();
-      })
-      .then((data) => {
-        if (!data.rates) throw new Error("No rates in response");
-        const eurToInr = data.rates["INR"];
-        if (!eurToInr) throw new Error("INR rate missing");
-        const rates = { INR: 1, EUR: 1 / eurToInr };
-        Object.entries(data.rates).forEach(([code, eurRate]) => {
-          if (code !== "INR") rates[code] = eurRate / eurToInr;
-        });
+        const { rates, date } = r.data;
         setFxRates(rates);
-        setFxDate(data.date);
+        setFxDate(date);
         setFxRate(rates[currency] ?? 1);
       })
       .catch((err) => {

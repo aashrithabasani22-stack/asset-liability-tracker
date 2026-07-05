@@ -3,6 +3,27 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/market", tags=["market"])
 
+FX_CODES = "INR,USD,GBP,SGD,AUD,CAD,JPY,CHF,MYR"
+
+
+@router.get("/fx")
+async def get_fx_rates():
+    """Proxy frankfurter.dev — returns all rates relative to INR (1 INR = X currency)."""
+    url = f"https://api.frankfurter.dev/v1/latest?from=EUR&to={FX_CODES}"
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.get(url)
+            r.raise_for_status()
+            data = r.json()
+        eur_to_inr = data["rates"]["INR"]
+        rates = {"INR": 1.0, "EUR": round(1 / eur_to_inr, 8)}
+        for code, eur_rate in data["rates"].items():
+            if code != "INR":
+                rates[code] = round(eur_rate / eur_to_inr, 8)
+        return {"rates": rates, "date": data["date"]}
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"FX fetch failed: {e}")
+
 
 @router.get("/stock/{symbol}")
 async def get_stock_price(symbol: str):
