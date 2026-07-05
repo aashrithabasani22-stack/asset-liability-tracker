@@ -1086,6 +1086,49 @@ h2 {
   color: var(--text-muted);
 }
 
+/* ── PWA install banner ── */
+.install-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(90deg, #312e81, #4f46e5);
+  color: white;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.install-btn {
+  background: white;
+  color: #4f46e5;
+  border: none;
+  padding: 0.35rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.install-btn:hover {
+  background: #eef2ff;
+}
+
+.install-dismiss {
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.install-dismiss:hover {
+  background: rgba(255,255,255,0.25);
+}
+
 /* ── Gain / loss badge ── */
 .gain-badge {
   display: inline-block;

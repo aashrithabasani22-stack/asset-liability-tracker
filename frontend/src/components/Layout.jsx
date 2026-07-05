@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import InstallPrompt from "./InstallPrompt";
 
 function useDarkMode() {
   const [dark, setDark] = useState(() => localStorage.getItem("theme") === "dark");
@@ -96,6 +97,7 @@ export default function Layout() {
           <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </nav>
+      <InstallPrompt />
       <main className="main-content">
         <Outlet />
       </main>
