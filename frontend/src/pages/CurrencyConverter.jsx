@@ -11,7 +11,6 @@ const CURRENCIES = [
   { code: "JPY", label: "JPY – Japanese Yen" },
   { code: "CHF", label: "CHF – Swiss Franc" },
   { code: "CNY", label: "CNY – Chinese Yuan" },
-  { code: "QAR", label: "QAR – Qatari Riyal" },
   { code: "MYR", label: "MYR – Malaysian Ringgit" },
   { code: "HKD", label: "HKD – Hong Kong Dollar" },
   { code: "NZD", label: "NZD – New Zealand Dollar" },
@@ -150,7 +149,7 @@ function QuickRates() {
   const [date, setDate] = useState("");
 
   useEffect(() => {
-    fetch("https://api.frankfurter.app/latest?from=USD&to=INR,EUR,GBP,SGD,AUD,JPY,CHF,CAD,HKD,QAR")
+    fetch("https://api.frankfurter.app/latest?from=USD&to=INR,EUR,GBP,SGD,AUD,JPY,CHF,CAD,HKD,MYR,NZD,CNY")
       .then((r) => r.json())
       .then((data) => { setRates(data.rates); setDate(data.date); })
       .catch(() => {});

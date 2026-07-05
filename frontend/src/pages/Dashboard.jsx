@@ -18,10 +18,11 @@ const CURRENCIES = [
   { code: "CAD", label: "CAD" },
   { code: "JPY", label: "¥ JPY" },
   { code: "CHF", label: "CHF" },
-  { code: "QAR", label: "QAR" },
+  { code: "MYR", label: "MYR" },
 ];
 
-const FX_CODES = CURRENCIES.filter((c) => c.code !== "INR").map((c) => c.code).join(",");
+// ECB-supported codes only; exclude INR (fetched separately) and EUR (it's the base)
+const FX_CODES = "INR,USD,GBP,SGD,AUD,CAD,JPY,CHF,MYR";
 
 function makeFmt(currency) {
   return new Intl.NumberFormat("en-IN", {
@@ -108,11 +109,16 @@ export default function Dashboard() {
   useEffect(() => {
     setFxLoading(true);
     setFxError("");
-    fetch(`https://api.frankfurter.app/latest?from=EUR&to=INR,${FX_CODES}`)
-      .then((r) => r.json())
+    fetch(`https://api.frankfurter.app/latest?from=EUR&to=${FX_CODES}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((data) => {
+        if (!data.rates) throw new Error("No rates in response");
         const eurToInr = data.rates["INR"];
-        const rates = { INR: 1 };
+        if (!eurToInr) throw new Error("INR rate missing");
+        const rates = { INR: 1, EUR: 1 / eurToInr };
         Object.entries(data.rates).forEach(([code, eurRate]) => {
           if (code !== "INR") rates[code] = eurRate / eurToInr;
         });
@@ -120,7 +126,10 @@ export default function Dashboard() {
         setFxDate(data.date);
         setFxRate(rates[currency] ?? 1);
       })
-      .catch(() => setFxError("FX rates unavailable"))
+      .catch((err) => {
+        console.error("FX fetch failed:", err);
+        setFxError("FX rates unavailable");
+      })
       .finally(() => setFxLoading(false));
   }, []);
 
