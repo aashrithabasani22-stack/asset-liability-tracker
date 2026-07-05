@@ -5,17 +5,16 @@ const CURRENCIES = [
   { code: "USD", label: "USD – US Dollar" },
   { code: "EUR", label: "EUR – Euro" },
   { code: "GBP", label: "GBP – British Pound" },
-  { code: "AED", label: "AED – UAE Dirham" },
   { code: "SGD", label: "SGD – Singapore Dollar" },
   { code: "AUD", label: "AUD – Australian Dollar" },
   { code: "CAD", label: "CAD – Canadian Dollar" },
   { code: "JPY", label: "JPY – Japanese Yen" },
   { code: "CHF", label: "CHF – Swiss Franc" },
   { code: "CNY", label: "CNY – Chinese Yuan" },
-  { code: "SAR", label: "SAR – Saudi Riyal" },
   { code: "QAR", label: "QAR – Qatari Riyal" },
   { code: "MYR", label: "MYR – Malaysian Ringgit" },
   { code: "HKD", label: "HKD – Hong Kong Dollar" },
+  { code: "NZD", label: "NZD – New Zealand Dollar" },
 ];
 
 export default function CurrencyConverter() {
@@ -151,7 +150,7 @@ function QuickRates() {
   const [date, setDate] = useState("");
 
   useEffect(() => {
-    fetch("https://api.frankfurter.app/latest?from=USD&to=INR,EUR,GBP,AED,SGD,AUD,JPY,SAR")
+    fetch("https://api.frankfurter.app/latest?from=USD&to=INR,EUR,GBP,SGD,AUD,JPY,CHF,CAD,HKD,QAR")
       .then((r) => r.json())
       .then((data) => { setRates(data.rates); setDate(data.date); })
       .catch(() => {});

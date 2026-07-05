@@ -13,13 +13,15 @@ const CURRENCIES = [
   { code: "USD", label: "$ USD" },
   { code: "EUR", label: "€ EUR" },
   { code: "GBP", label: "£ GBP" },
-  { code: "AED", label: "AED" },
   { code: "SGD", label: "SGD" },
   { code: "AUD", label: "AUD" },
   { code: "CAD", label: "CAD" },
   { code: "JPY", label: "¥ JPY" },
-  { code: "SAR", label: "SAR" },
+  { code: "CHF", label: "CHF" },
+  { code: "QAR", label: "QAR" },
 ];
+
+const FX_CODES = CURRENCIES.filter((c) => c.code !== "INR").map((c) => c.code).join(",");
 
 function makeFmt(currency) {
   return new Intl.NumberFormat("en-IN", {
@@ -69,9 +71,11 @@ export default function Dashboard() {
   const [error, setError] = useState("");
 
   const [currency, setCurrency] = useState("INR");
+  const [fxRates, setFxRates] = useState({});
   const [fxRate, setFxRate] = useState(1);
   const [fxLoading, setFxLoading] = useState(false);
   const [fxDate, setFxDate] = useState("");
+  const [fxError, setFxError] = useState("");
 
   useEffect(() => {
     Promise.all([
@@ -102,17 +106,29 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (currency === "INR") { setFxRate(1); setFxDate(""); return; }
     setFxLoading(true);
-    fetch(`https://api.frankfurter.app/latest?from=INR&to=${currency}`)
+    setFxError("");
+    fetch(`https://api.frankfurter.app/latest?from=EUR&to=INR,${FX_CODES}`)
       .then((r) => r.json())
       .then((data) => {
-        setFxRate(data.rates[currency]);
+        const eurToInr = data.rates["INR"];
+        const rates = { INR: 1 };
+        Object.entries(data.rates).forEach(([code, eurRate]) => {
+          if (code !== "INR") rates[code] = eurRate / eurToInr;
+        });
+        setFxRates(rates);
         setFxDate(data.date);
+        setFxRate(rates[currency] ?? 1);
       })
-      .catch(() => setFxRate(1))
+      .catch(() => setFxError("FX rates unavailable"))
       .finally(() => setFxLoading(false));
-  }, [currency]);
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(fxRates).length === 0) return;
+    setFxRate(fxRates[currency] ?? 1);
+    setFxError(fxRates[currency] ? "" : `Rate not available for ${currency}`);
+  }, [currency, fxRates]);
 
   function exportPDF() {
     const doc = new jsPDF();
@@ -306,8 +322,9 @@ export default function Dashboard() {
               <option key={c.code} value={c.code}>{c.label}</option>
             ))}
           </select>
-          {fxLoading && <span className="fx-loading">updating…</span>}
-          {fxDate && !fxLoading && (
+          {fxLoading && <span className="fx-loading">loading…</span>}
+          {fxError && !fxLoading && <span style={{ color: "#ef4444", fontSize: "0.8rem" }}>{fxError}</span>}
+          {fxDate && !fxLoading && !fxError && (
             <span className="fx-date">Rate: {fxDate}</span>
           )}
           </div>
