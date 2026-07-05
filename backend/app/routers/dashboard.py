@@ -64,3 +64,59 @@ def get_summary(
         silver_rate_per_gram=silver_rate,
         platinum_rate_per_gram=platinum_rate,
     )
+
+
+@router.get("/portfolio", response_model=schemas.PortfolioReturn)
+def get_portfolio(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    uid = current_user.id
+    items = []
+
+    for p in db.query(models.Property).filter(models.Property.user_id == uid).all():
+        if p.purchase_price:
+            gain = p.current_value - p.purchase_price
+            items.append(schemas.PortfolioItem(
+                name=p.address, asset_type="Real Estate",
+                purchase_price=p.purchase_price, current_value=p.current_value,
+                gain=gain, gain_pct=(gain / p.purchase_price * 100) if p.purchase_price else 0,
+            ))
+
+    for m in db.query(models.MutualFund).filter(models.MutualFund.user_id == uid).all():
+        if m.purchase_price:
+            gain = m.current_value - m.purchase_price
+            items.append(schemas.PortfolioItem(
+                name=m.fund_name, asset_type="MF & Stocks",
+                purchase_price=m.purchase_price, current_value=m.current_value,
+                gain=gain, gain_pct=(gain / m.purchase_price * 100) if m.purchase_price else 0,
+            ))
+
+    for v in db.query(models.Vehicle).filter(models.Vehicle.user_id == uid).all():
+        if v.purchase_price:
+            gain = v.current_value - v.purchase_price
+            items.append(schemas.PortfolioItem(
+                name=v.name, asset_type="Vehicle",
+                purchase_price=v.purchase_price, current_value=v.current_value,
+                gain=gain, gain_pct=(gain / v.purchase_price * 100) if v.purchase_price else 0,
+            ))
+
+    for o in db.query(models.OtherAsset).filter(models.OtherAsset.user_id == uid).all():
+        if o.purchase_price:
+            gain = o.current_value - o.purchase_price
+            items.append(schemas.PortfolioItem(
+                name=o.name, asset_type="Other",
+                purchase_price=o.purchase_price, current_value=o.current_value,
+                gain=gain, gain_pct=(gain / o.purchase_price * 100) if o.purchase_price else 0,
+            ))
+
+    total_invested = sum(i.purchase_price for i in items)
+    total_current = sum(i.current_value for i in items)
+    total_gain = total_current - total_invested
+    return schemas.PortfolioReturn(
+        items=items,
+        total_invested=total_invested,
+        total_current=total_current,
+        total_gain=total_gain,
+        total_gain_pct=(total_gain / total_invested * 100) if total_invested else 0,
+    )

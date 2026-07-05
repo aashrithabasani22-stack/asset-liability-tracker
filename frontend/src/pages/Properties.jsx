@@ -4,6 +4,7 @@ const fields = [
   { name: "address", label: "Address" },
   { name: "property_type", label: "Type" },
   { name: "current_value", label: "Current Value", type: "number" },
+  { name: "purchase_price", label: "Purchase Price", type: "number", required: false },
   { name: "owner_name", label: "Owner", required: false },
 ];
 

@@ -6,6 +6,7 @@ const fields = [
   { name: "units", label: "Units", type: "number" },
   { name: "nav_per_unit", label: "NAV / Price per Unit (₹)", type: "number" },
   { name: "current_value", label: "Current Value (₹)", type: "number" },
+  { name: "purchase_price", label: "Amount Invested (₹)", type: "number", required: false },
   { name: "owner_name", label: "Owner", required: false },
 ];
 

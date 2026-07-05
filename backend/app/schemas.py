@@ -33,6 +33,7 @@ class PropertyBase(BaseModel):
     address: str
     property_type: str
     current_value: float
+    purchase_price: float | None = None
     owner_name: str | None = None
 
 
@@ -177,6 +178,7 @@ class MutualFundBase(BaseModel):
     units: float
     nav_per_unit: float
     current_value: float
+    purchase_price: float | None = None
     owner_name: str | None = None
 
 class MutualFundCreate(MutualFundBase):
@@ -194,6 +196,7 @@ class VehicleBase(BaseModel):
     vehicle_type: str | None = None
     registration_number: str | None = None
     current_value: float
+    purchase_price: float | None = None
     owner_name: str | None = None
 
 class VehicleCreate(VehicleBase):
@@ -210,6 +213,7 @@ class OtherAssetBase(BaseModel):
     name: str
     category: str | None = None
     current_value: float
+    purchase_price: float | None = None
     notes: str | None = None
     owner_name: str | None = None
 
@@ -303,6 +307,23 @@ class FamilyDashboard(BaseModel):
     combined_net_worth: float
     combined_assets: float
     combined_liabilities: float
+
+
+# --- Portfolio Return ---
+class PortfolioItem(BaseModel):
+    name: str
+    asset_type: str
+    purchase_price: float
+    current_value: float
+    gain: float
+    gain_pct: float
+
+class PortfolioReturn(BaseModel):
+    items: list[PortfolioItem]
+    total_invested: float
+    total_current: float
+    total_gain: float
+    total_gain_pct: float
 
 
 # --- Dashboard ---

@@ -64,6 +64,7 @@ export default function Dashboard() {
   const [familyData, setFamilyData] = useState(null);
   const [history, setHistory] = useState([]);
   const [txSummary, setTxSummary] = useState(null);
+  const [portfolio, setPortfolio] = useState(null);
   const [view, setView] = useState("personal");
   const [error, setError] = useState("");
 
@@ -95,6 +96,7 @@ export default function Dashboard() {
         ).catch(() => {});
         const thisMonth = new Date().toISOString().slice(0, 7);
         apiClient.get(`/transactions/summary/${thisMonth}`).then((r) => setTxSummary(r.data)).catch(() => {});
+        apiClient.get("/dashboard/portfolio").then((r) => { if (r.data.items.length) setPortfolio(r.data); }).catch(() => {});
       })
       .catch((err) => setError(err.response?.data?.detail || "Failed to load dashboard"));
   }, []);
@@ -488,6 +490,56 @@ export default function Dashboard() {
           </table>
         </div>
       </div>
+
+      {portfolio && (
+        <div className="card" style={{ marginTop: "1.5rem" }}>
+          <h2>Portfolio Return</h2>
+          <div className="card-grid" style={{ marginBottom: "1rem" }}>
+            <div className="card">
+              <h3>Total Invested</h3>
+              <p className="big-number">{fmt.format(cx(portfolio.total_invested))}</p>
+            </div>
+            <div className="card">
+              <h3>Current Value</h3>
+              <p className="big-number">{fmt.format(cx(portfolio.total_current))}</p>
+            </div>
+            <div className="card card-accent">
+              <h3>Total Gain / Loss</h3>
+              <p className={`big-number ${portfolio.total_gain >= 0 ? "positive" : "negative"}`}>
+                {portfolio.total_gain >= 0 ? "+" : ""}{fmt.format(cx(portfolio.total_gain))}
+                <span style={{ fontSize: "1rem", marginLeft: "0.4rem", opacity: 0.75 }}>
+                  ({portfolio.total_gain_pct.toFixed(1)}%)
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr><th>Asset</th><th>Type</th><th>Invested</th><th>Current</th><th>Gain / Loss</th><th>Return</th></tr>
+              </thead>
+              <tbody>
+                {portfolio.items.map((item, i) => (
+                  <tr key={i}>
+                    <td>{item.name}</td>
+                    <td>{item.asset_type}</td>
+                    <td>{fmt.format(cx(item.purchase_price))}</td>
+                    <td>{fmt.format(cx(item.current_value))}</td>
+                    <td className={item.gain >= 0 ? "positive" : "negative"}>
+                      {item.gain >= 0 ? "+" : ""}{fmt.format(cx(item.gain))}
+                    </td>
+                    <td>
+                      <span className={`gain-badge ${item.gain_pct >= 0 ? "gain-pos" : "gain-neg"}`}>
+                        {item.gain_pct >= 0 ? "▲" : "▼"} {Math.abs(item.gain_pct).toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {history.length > 1 && (
         <div className="card" style={{ marginTop: "1.5rem" }}>

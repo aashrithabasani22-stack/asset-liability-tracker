@@ -28,6 +28,7 @@ class Property(Base):
     address = Column(String, nullable=False)
     property_type = Column(String, nullable=False)
     current_value = Column(Float, nullable=False, default=0)
+    purchase_price = Column(Float, nullable=True)
     owner_name = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
@@ -106,6 +107,7 @@ class MutualFund(Base):
     units = Column(Float, nullable=False, default=0)
     nav_per_unit = Column(Float, nullable=False, default=0)
     current_value = Column(Float, nullable=False, default=0)
+    purchase_price = Column(Float, nullable=True)
     owner_name = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
@@ -121,6 +123,7 @@ class Vehicle(Base):
     vehicle_type = Column(String, nullable=True)
     registration_number = Column(String, nullable=True)
     current_value = Column(Float, nullable=False, default=0)
+    purchase_price = Column(Float, nullable=True)
     owner_name = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
@@ -135,6 +138,7 @@ class OtherAsset(Base):
     name = Column(String, nullable=False)
     category = Column(String, nullable=True)
     current_value = Column(Float, nullable=False, default=0)
+    purchase_price = Column(Float, nullable=True)
     notes = Column(String, nullable=True)
     owner_name = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())

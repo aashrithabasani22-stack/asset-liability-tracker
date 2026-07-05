@@ -22,6 +22,10 @@ async def lifespan(app: FastAPI):
         "ALTER TABLE loans ADD COLUMN principal_amount FLOAT NOT NULL DEFAULT 0",
         "ALTER TABLE loans ADD COLUMN payment_bank VARCHAR",
         "ALTER TABLE loans ADD COLUMN next_due_date VARCHAR",
+        "ALTER TABLE properties ADD COLUMN purchase_price FLOAT",
+        "ALTER TABLE mutual_funds ADD COLUMN purchase_price FLOAT",
+        "ALTER TABLE vehicles ADD COLUMN purchase_price FLOAT",
+        "ALTER TABLE other_assets ADD COLUMN purchase_price FLOAT",
     ]
     with engine.connect() as conn:
         for sql in migrations:
