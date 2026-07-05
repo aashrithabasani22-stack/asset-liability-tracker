@@ -106,17 +106,23 @@ export default function Dashboard() {
   useEffect(() => {
     setFxLoading(true);
     setFxError("");
+    const FX_CODES = "INR,USD,GBP,SGD,AUD,CAD,JPY,CHF,MYR";
+    const applyRates = (rates, date) => {
+      setFxRates(rates); setFxDate(date); setFxRate(rates[currency] ?? 1);
+    };
+    const fallback = () =>
+      fetch(`https://api.frankfurter.dev/v1/latest?from=EUR&to=${FX_CODES}`)
+        .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+        .then((data) => {
+          const eurToInr = data.rates["INR"];
+          const rates = { INR: 1, EUR: 1 / eurToInr };
+          Object.entries(data.rates).forEach(([c, v]) => { if (c !== "INR") rates[c] = v / eurToInr; });
+          applyRates(rates, data.date);
+        });
+
     apiClient.get("/market/fx")
-      .then((r) => {
-        const { rates, date } = r.data;
-        setFxRates(rates);
-        setFxDate(date);
-        setFxRate(rates[currency] ?? 1);
-      })
-      .catch((err) => {
-        console.error("FX fetch failed:", err);
-        setFxError("FX rates unavailable");
-      })
+      .then((r) => applyRates(r.data.rates, r.data.date))
+      .catch(() => fallback().catch(() => setFxError("FX rates unavailable")))
       .finally(() => setFxLoading(false));
   }, []);
 
