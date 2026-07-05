@@ -26,7 +26,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.frankfurter\.app\/.*/i,
+            urlPattern: /^https:\/\/api\.frankfurter\.dev\/.*/i,
             handler: 'NetworkFirst',
             options: { cacheName: 'fx-rates', expiration: { maxAgeSeconds: 3600 } },
           },

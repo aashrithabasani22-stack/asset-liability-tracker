@@ -35,7 +35,7 @@ export default function CurrencyConverter() {
     setError("");
     try {
       const res = await fetch(
-        `https://api.frankfurter.app/latest?from=${from}&to=${to}`
+        `https://api.frankfurter.dev/v1/latest?from=${from}&to=${to}`
       );
       if (!res.ok) throw new Error("Rate fetch failed");
       const data = await res.json();
@@ -149,7 +149,7 @@ function QuickRates() {
   const [date, setDate] = useState("");
 
   useEffect(() => {
-    fetch("https://api.frankfurter.app/latest?from=USD&to=INR,EUR,GBP,SGD,AUD,JPY,CHF,CAD,HKD,MYR,NZD,CNY")
+    fetch("https://api.frankfurter.dev/v1/latest?from=USD&to=INR,EUR,GBP,SGD,AUD,JPY,CHF,CAD,HKD,MYR,NZD,CNY")
       .then((r) => r.json())
       .then((data) => { setRates(data.rates); setDate(data.date); })
       .catch(() => {});

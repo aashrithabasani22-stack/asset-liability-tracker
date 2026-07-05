@@ -109,7 +109,7 @@ export default function Dashboard() {
   useEffect(() => {
     setFxLoading(true);
     setFxError("");
-    fetch(`https://api.frankfurter.app/latest?from=EUR&to=${FX_CODES}`)
+    fetch(`https://api.frankfurter.dev/v1/latest?from=EUR&to=${FX_CODES}`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
