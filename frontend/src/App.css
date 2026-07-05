@@ -1473,6 +1473,61 @@ html.dark .tx-expense {
   }
 }
 
+/* ── Budget Planner ── */
+.budget-list { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.budget-row {
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.budget-row.budget-over { border-color: var(--danger); background: #fff1f2; }
+html.dark .budget-row.budget-over { background: #2d0a0a; }
+
+.budget-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.budget-category { font-weight: 700; font-size: 0.95rem; }
+
+.budget-row-actions { display: flex; gap: 0.4rem; }
+
+.budget-bar-track {
+  height: 8px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.budget-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.budget-row-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  align-items: center;
+}
+.budget-spent { color: var(--text); }
+.budget-over-badge { color: var(--danger); font-weight: 700; }
+.budget-limit { color: var(--text-muted); }
+.budget-remaining { color: var(--success); margin-left: auto; }
+.budget-pct { font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 99px; font-size: 0.78rem; }
+.budget-pct-ok { background: #dcfce7; color: #166534; }
+.budget-pct-warn { background: #fef9c3; color: #854d0e; }
+.budget-pct-over { background: #fee2e2; color: #991b1b; }
+html.dark .budget-pct-ok { background: #052e16; color: #6ee7b7; }
+html.dark .budget-pct-warn { background: #422006; color: #fcd34d; }
+html.dark .budget-pct-over { background: #450a0a; color: #fca5a5; }
+
 /* ── Savings Goals ── */
 .goals-grid {
   display: grid;

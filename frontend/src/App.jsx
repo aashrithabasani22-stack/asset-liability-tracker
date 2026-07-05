@@ -21,6 +21,7 @@ import CreditCards from "./pages/CreditCards";
 import Family from "./pages/Family";
 import Transactions from "./pages/Transactions";
 import Goals from "./pages/Goals";
+import Budget from "./pages/Budget";
 
 export default function App() {
   return (
@@ -52,6 +53,7 @@ export default function App() {
             <Route path="/family" element={<Family />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/goals" element={<Goals />} />
+            <Route path="/budget" element={<Budget />} />
           </Route>
         </Routes>
       </BrowserRouter>

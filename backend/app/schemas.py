@@ -311,6 +311,29 @@ class FamilyDashboard(BaseModel):
     combined_liabilities: float
 
 
+# --- Budget ---
+class BudgetBase(BaseModel):
+    month: str
+    category: str
+    limit_amount: float
+
+class BudgetCreate(BudgetBase):
+    pass
+
+class BudgetOut(BudgetBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+class BudgetVsActual(BaseModel):
+    category: str
+    limit_amount: float
+    spent: float
+    remaining: float
+    pct: float
+    over: bool
+
+
 # --- Savings Goal ---
 class SavingsGoalBase(BaseModel):
     name: str

@@ -9,7 +9,7 @@ from app.database import Base, engine
 from app.routers import (
     auth, dashboard, documents, gold, loans, properties, silver,
     fixed_deposits, mutual_funds, vehicles, other_assets,
-    bank_accounts, credit_cards, family, networth, transactions, market, goals,
+    bank_accounts, credit_cards, family, networth, transactions, market, goals, budgets,
 )
 
 
@@ -70,6 +70,7 @@ app.include_router(networth.router)
 app.include_router(transactions.router)
 app.include_router(market.router)
 app.include_router(goals.router)
+app.include_router(budgets.router)
 
 
 @app.get("/")

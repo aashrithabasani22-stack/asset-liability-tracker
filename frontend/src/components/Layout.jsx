@@ -89,6 +89,7 @@ export default function Layout() {
 
           <Link to="/transactions">Transactions</Link>
           <Link to="/goals">Goals</Link>
+          <Link to="/budget">Budget</Link>
           <Link to="/family">Family</Link>
           <Link to="/currency">Currency</Link>
           <Link to="/settings">Settings</Link>

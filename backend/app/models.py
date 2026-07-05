@@ -227,6 +227,19 @@ class FamilyMember(Base):
     user = relationship("User")
 
 
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    month = Column(String, nullable=False)        # YYYY-MM
+    category = Column(String, nullable=False)
+    limit_amount = Column(Float, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="budgets")
+
+
 class SavingsGoal(Base):
     __tablename__ = "savings_goals"
 
