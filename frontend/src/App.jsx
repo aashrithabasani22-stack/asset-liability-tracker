@@ -20,6 +20,7 @@ import BankAccounts from "./pages/BankAccounts";
 import CreditCards from "./pages/CreditCards";
 import Family from "./pages/Family";
 import Transactions from "./pages/Transactions";
+import Goals from "./pages/Goals";
 
 export default function App() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/credit-cards" element={<CreditCards />} />
             <Route path="/family" element={<Family />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/goals" element={<Goals />} />
           </Route>
         </Routes>
       </BrowserRouter>

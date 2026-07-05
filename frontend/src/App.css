@@ -1473,6 +1473,126 @@ html.dark .tx-expense {
   }
 }
 
+/* ── Savings Goals ── */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.goal-card.goal-done { border-left: 4px solid var(--success); }
+.goal-card.goal-overdue { border-left: 4px solid var(--danger); }
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.goal-category {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+.goal-name {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.goal-amounts {
+  font-size: 1rem;
+}
+.goal-current { font-weight: 700; color: var(--text); }
+.goal-separator { color: var(--text-muted); margin: 0 0.2rem; }
+.goal-target { color: var(--text-muted); }
+
+.goal-bar-track {
+  height: 10px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.goal-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.goal-bar-fill.goal-bar-done { background: var(--success); }
+
+.goal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.82rem;
+}
+.goal-pct { color: var(--text-muted); }
+.goal-pct-done { color: var(--success); font-weight: 700; }
+.goal-achieved { background: #dcfce7; color: #166534; border-radius: 99px; padding: 0.1rem 0.55rem; font-weight: 600; }
+html.dark .goal-achieved { background: #052e16; color: #6ee7b7; }
+.goal-remaining { color: var(--text-muted); }
+.goal-deadline { color: var(--text-muted); margin-left: auto; }
+.goal-soon { color: #d97706; font-weight: 600; }
+.goal-overdue-text { color: var(--danger); font-weight: 600; }
+
+.goal-notes {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+.goal-add-btn {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.goal-add-btn:hover { background: var(--accent); color: #fff; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal-box {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.modal-box h3 { margin: 0; font-size: 1.1rem; }
+
 /* ── Fund search ── */
 .fund-search { position: relative; }
 

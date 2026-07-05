@@ -227,6 +227,22 @@ class FamilyMember(Base):
     user = relationship("User")
 
 
+class SavingsGoal(Base):
+    __tablename__ = "savings_goals"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    target_amount = Column(Float, nullable=False)
+    current_amount = Column(Float, nullable=False, default=0)
+    deadline = Column(String, nullable=True)
+    category = Column(String, nullable=True)
+    notes = Column(String, nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+    owner = relationship("User", backref="savings_goals")
+
+
 class Document(Base):
     __tablename__ = "documents"
 

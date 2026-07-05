@@ -311,6 +311,24 @@ class FamilyDashboard(BaseModel):
     combined_liabilities: float
 
 
+# --- Savings Goal ---
+class SavingsGoalBase(BaseModel):
+    name: str
+    target_amount: float
+    current_amount: float = 0
+    deadline: str | None = None
+    category: str | None = None
+    notes: str | None = None
+
+class SavingsGoalCreate(SavingsGoalBase):
+    pass
+
+class SavingsGoalOut(SavingsGoalBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+
 # --- Portfolio Return ---
 class PortfolioItem(BaseModel):
     name: str
