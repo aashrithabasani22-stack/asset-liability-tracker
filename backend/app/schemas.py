@@ -236,6 +236,30 @@ class DocumentOut(BaseModel):
     url: str
 
 
+# --- Transactions ---
+class TransactionBase(BaseModel):
+    date: str
+    type: str
+    category: str
+    description: str | None = None
+    amount: float
+
+class TransactionCreate(TransactionBase):
+    pass
+
+class TransactionOut(TransactionBase):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    created_at: datetime
+
+class MonthlySummary(BaseModel):
+    month: str
+    total_income: float
+    total_expenses: float
+    net_savings: float
+    by_category: dict[str, float]
+
+
 # --- Net Worth History ---
 class SnapshotOut(BaseModel):
     date: str

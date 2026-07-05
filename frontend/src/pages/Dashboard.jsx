@@ -63,6 +63,7 @@ export default function Dashboard() {
   const [silverAssets, setSilverAssets] = useState([]);
   const [familyData, setFamilyData] = useState(null);
   const [history, setHistory] = useState([]);
+  const [txSummary, setTxSummary] = useState(null);
   const [view, setView] = useState("personal");
   const [error, setError] = useState("");
 
@@ -92,6 +93,8 @@ export default function Dashboard() {
         apiClient.post("/networth/snapshot").then(() =>
           apiClient.get("/networth/history?days=365").then((r) => setHistory(r.data))
         ).catch(() => {});
+        const thisMonth = new Date().toISOString().slice(0, 7);
+        apiClient.get(`/transactions/summary/${thisMonth}`).then((r) => setTxSummary(r.data)).catch(() => {});
       })
       .catch((err) => setError(err.response?.data?.detail || "Failed to load dashboard"));
   }, []);
@@ -395,6 +398,17 @@ export default function Dashboard() {
           <h3>Credit Card Due</h3>
           <p className="big-number negative">{fmt.format(cx(summary.total_credit_card_outstanding))}</p>
         </div>
+        {txSummary && (
+          <div className="card">
+            <h3>This month — savings</h3>
+            <p className={`big-number ${txSummary.net_savings >= 0 ? "positive" : "negative"}`}>
+              {fmt.format(cx(txSummary.net_savings))}
+            </p>
+            <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: "0.3rem 0 0" }}>
+              {fmt.format(cx(txSummary.total_income))} in · {fmt.format(cx(txSummary.total_expenses))} out
+            </p>
+          </div>
+        )}
       </div>
 
       {alerts.length > 0 && (

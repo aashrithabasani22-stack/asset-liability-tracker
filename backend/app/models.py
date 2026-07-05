@@ -173,6 +173,19 @@ class CreditCard(Base):
     owner = relationship("User", backref="credit_cards")
 
 
+class Transaction(Base):
+    __tablename__ = "transactions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    date = Column(String, nullable=False)
+    type = Column(String, nullable=False)  # "income" | "expense"
+    category = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    amount = Column(Float, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+
+
 class NetWorthSnapshot(Base):
     __tablename__ = "networth_snapshots"
 

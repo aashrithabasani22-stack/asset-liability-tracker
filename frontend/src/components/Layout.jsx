@@ -86,6 +86,7 @@ export default function Layout() {
             { to: "/credit-cards", label: "Credit Cards" },
           ]} />
 
+          <Link to="/transactions">Transactions</Link>
           <Link to="/family">Family</Link>
           <Link to="/currency">Currency</Link>
           <Link to="/settings">Settings</Link>

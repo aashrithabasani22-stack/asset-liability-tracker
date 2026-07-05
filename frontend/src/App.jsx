@@ -19,6 +19,7 @@ import Settings from "./pages/Settings";
 import BankAccounts from "./pages/BankAccounts";
 import CreditCards from "./pages/CreditCards";
 import Family from "./pages/Family";
+import Transactions from "./pages/Transactions";
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
             <Route path="/bank-accounts" element={<BankAccounts />} />
             <Route path="/credit-cards" element={<CreditCards />} />
             <Route path="/family" element={<Family />} />
+            <Route path="/transactions" element={<Transactions />} />
           </Route>
         </Routes>
       </BrowserRouter>
