@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import SavingsGoal
 from app.schemas import SavingsGoalCreate, SavingsGoalOut
-from app.routers.auth import get_current_user
+from app.security import get_current_user
 
 router = APIRouter(prefix="/goals", tags=["goals"])
 
