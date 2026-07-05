@@ -9,7 +9,7 @@ from app.database import Base, engine
 from app.routers import (
     auth, dashboard, documents, gold, loans, properties, silver,
     fixed_deposits, mutual_funds, vehicles, other_assets,
-    bank_accounts, credit_cards, family, networth, transactions,
+    bank_accounts, credit_cards, family, networth, transactions, market,
 )
 
 
@@ -26,6 +26,8 @@ async def lifespan(app: FastAPI):
         "ALTER TABLE mutual_funds ADD COLUMN purchase_price FLOAT",
         "ALTER TABLE vehicles ADD COLUMN purchase_price FLOAT",
         "ALTER TABLE other_assets ADD COLUMN purchase_price FLOAT",
+        "ALTER TABLE mutual_funds ADD COLUMN scheme_code VARCHAR",
+        "ALTER TABLE mutual_funds ADD COLUMN ticker_symbol VARCHAR",
     ]
     with engine.connect() as conn:
         for sql in migrations:
@@ -66,6 +68,7 @@ app.include_router(credit_cards.router)
 app.include_router(family.router)
 app.include_router(networth.router)
 app.include_router(transactions.router)
+app.include_router(market.router)
 
 
 @app.get("/")

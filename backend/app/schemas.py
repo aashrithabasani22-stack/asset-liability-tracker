@@ -179,6 +179,8 @@ class MutualFundBase(BaseModel):
     nav_per_unit: float
     current_value: float
     purchase_price: float | None = None
+    scheme_code: str | None = None
+    ticker_symbol: str | None = None
     owner_name: str | None = None
 
 class MutualFundCreate(MutualFundBase):

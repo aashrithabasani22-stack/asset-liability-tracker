@@ -1472,3 +1472,63 @@ html.dark .tx-expense {
     font-size: 1.3rem;
   }
 }
+
+/* ── Fund search ── */
+.fund-search { position: relative; }
+
+.fund-search-results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  position: absolute;
+  z-index: 50;
+  width: 100%;
+  max-height: 260px;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.fund-search-results li {
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.fund-search-results li:last-child { border-bottom: none; }
+.fund-search-results li:hover { background: var(--bg); }
+
+.fund-result-name { font-size: 0.88rem; color: var(--text); }
+.fund-result-code { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ── Sync button ── */
+.sync-btn {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.72rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sync-btn:hover { background: var(--accent); color: #fff; }
+
+/* ── Cancel button ── */
+.cancel-btn {
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+.cancel-btn:hover { background: var(--bg); }

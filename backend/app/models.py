@@ -108,6 +108,8 @@ class MutualFund(Base):
     nav_per_unit = Column(Float, nullable=False, default=0)
     current_value = Column(Float, nullable=False, default=0)
     purchase_price = Column(Float, nullable=True)
+    scheme_code = Column(String, nullable=True)   # AMFI code for Indian MFs
+    ticker_symbol = Column(String, nullable=True)  # Yahoo Finance ticker for stocks
     owner_name = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
